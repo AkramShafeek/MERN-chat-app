@@ -3,6 +3,7 @@ require('express-async-errors');
 const dotenv = require('dotenv');
 dotenv.config();
 const path = require('path');
+const cors = require('cors');
 
 // express
 const express = require('express');
@@ -17,6 +18,11 @@ const userRouter = require('./routes/userRoutes');
 // error handlers
 const errorHandler = require('./middleware/errorHandler');
 
+
+// middleware to allow cors
+app.use(cors({
+    origin: ['http://localhost:3000','http://192.168.43.215:3000'],
+  }))
 // middleware to parse json data
 app.use(express.json());
 //middleware to server static files
@@ -35,7 +41,7 @@ const port = process.env.PORT || 3001
 const startServer = async () => { 
     try {
         await connectToMongo();
-        app.listen(port, () => console.log(`Server is listening to port ${port}`));
+        app.listen(port,['192.168.43.215','localhost'], () => console.log(`Server is listening to port ${port}`));
     } catch (error) {
         console.log("couldn't start server due to db error");
         process.exit(1);

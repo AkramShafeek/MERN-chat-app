@@ -2,7 +2,7 @@ const User = require('../models/UserModel');
 const generateToken = require('../database/generateToken');
 
 const login = async (req, res) => {
-
+  console.log('server was hit');
   const { email, password } = req.body;
   const user = await User.findOne({ email: email });
 
