@@ -6,7 +6,8 @@ import { Tab, Tabs } from '@mui/material';
 import Login from '../components/Login';
 import Signup from '../components/Signup';
 import { useMediaQuery } from '@mui/material';
-import bgImg from '../1185202.jpg';
+import bgImg from '../1185202.png';
+import { useTheme } from '@emotion/react';
 
 
 const initialValuesRegister = {
@@ -30,6 +31,8 @@ const HomePage = () => {
   const [value, setValue] = useState(1);
   const isLogin = value == 1;
   const isSignup = value == 2;
+  const { palette } = useTheme();
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
   }
@@ -39,8 +42,7 @@ const HomePage = () => {
     // return;
   };
   return (
-    <div style ={{
-      backgroundColor: "#c8dff7",
+    <div style={{
       display: "flex",
       minHeight: "100%",
       width: "100%",
@@ -48,13 +50,12 @@ const HomePage = () => {
       padding: "0px"
     }}>
       {isNonMobile && <div style={{
-        backgroundColor: "#c8dff7",
         width: '100%',
-        height: '100vh',        
+        height: '100vh',
         boxSizing: 'border-box',
       }}><img src={bgImg} style={{
         width: '100%',
-        height: '100%', 
+        height: '100%',
         objectFit: 'cover',
       }} /></div>}
       <Container maxWidth="l" sx={{
@@ -66,19 +67,20 @@ const HomePage = () => {
       }}>
         <Box
           sx={{
-            backgroundColor: "white",
+            backgroundColor: palette.primary.main,
             padding: "1rem",
-            width: isNonMobile ? "60%" : "100%",
+            width: isNonMobile ? "50%" : "100%",
             borderRadius: "10px"
           }}>
-          <Typography align='center'>MERN-chat</Typography>
+          <Typography align='center' color={"white"}>MERN-chat</Typography>
         </Box>
         <Box
           sx={{
-            backgroundColor: "white",
-            padding: "1rem",
-            width: isNonMobile ? "60%" : "100%",
-            borderRadius: "10px"
+            // backgroundColor: "white",
+            padding: isNonMobile ? "2rem" : "1rem",
+            width: isNonMobile ? "50%" : "100%",
+            borderRadius: "10px",
+            border: "1px solid " + palette.primary.light
           }}>
           <Box sx={{ width: '100%', typography: 'body1' }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>

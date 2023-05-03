@@ -1,6 +1,9 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
+import axios from "axios";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const initialValuesLogin = {
   email: "",
@@ -14,9 +17,19 @@ const loginSchema = yup.object().shape({
 
 const Login = () => {
 
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const handleFormSubmit = async (values, onSubmitProps) => {
     console.log("in handle submit")
-    console.log(values);
+    try {
+      const url = 'http://192.168.43.215:3001/user/auth/login';
+      const response = await axios.post(url, values);
+      // console.log(response.data);
+      navigate('/chat');
+    } catch (error) {
+      // console.log(error.response.data);
+      setError(error.response.data.msg);
+    }
   }
 
   return (
@@ -50,6 +63,7 @@ const Login = () => {
               error={Boolean(touched.email) && Boolean(errors.email)}
               helperText={touched.email && errors.email}
               sx={{ gridColumn: "span 1" }}
+              variant="standard"
             />
             <TextField
               label="Password"
@@ -62,8 +76,14 @@ const Login = () => {
               error={Boolean(touched.password) && Boolean(errors.password)}
               helperText={touched.password && errors.password}
               sx={{ gridColumn: "span 1" }}
+              variant="standard"
             />
-            <Button type="submit" sx={{gridColumn:'span 1'}} variant="contained">
+            {error && (
+              <Typography color="red" fontFamily={"Lato"} fontWeight={"700"} textAlign={"center"}>
+                {error}
+              </Typography>
+            )}
+            <Button type="submit" sx={{ gridColumn: 'span 1' }} variant="contained">
               LOGIN
             </Button>
           </Box>

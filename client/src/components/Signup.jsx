@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useState } from "react";
+import axios from "axios";
 
 const initialValuesSignup = {
   name: "",
@@ -23,12 +24,27 @@ const signupSchema = yup.object().shape({
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordMismatched, setPasswordMismatched] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
   const handleFormSubmit = async (values, onSubmitProps) => {
-    console.log("in handle submit")
-    console.log(values);
+    if (values.confirmPassword != values.password) {
+      setPasswordMismatched(true);
+      setTimeout(()=>{setPasswordMismatched(false)},3000);
+      return;
+    }
+    delete values.confirmPassword;
+    try {
+      const url = 'http://localhost:3001/user/auth/register';
+      const response = await axios.post(url, values);
+      setSuccess('Registered successfully, continue to login');
+    } catch (error) {
+      setError(error.response.data.msg);
+    }
+
   }
 
   const acceptImage = (event) => {
@@ -66,6 +82,7 @@ const Signup = () => {
               error={Boolean(touched.name) && Boolean(errors.name)}
               helperText={touched.name && errors.name}
               sx={{ gridColumn: "span 1" }}
+              variant="standard"
             />
             <TextField
               label="Email"
@@ -76,10 +93,11 @@ const Signup = () => {
               error={Boolean(touched.email) && Boolean(errors.email)}
               helperText={touched.email && errors.email}
               sx={{ gridColumn: "span 1" }}
+              variant="standard"
             />
             <TextField
               label='Password'
-              variant="outlined"
+              variant="standard"
               type={showPassword ? "text" : "password"} // <-- This is where the magic happens
               onChange={handleChange}
               onBlur={handleBlur}
@@ -103,7 +121,7 @@ const Signup = () => {
             />
             <TextField
               label='Confirm password'
-              variant="outlined"
+              variant="standard"
               type={showPassword ? "text" : "password"} // <-- This is where the magic happens
               onChange={handleChange}
               onBlur={handleBlur}
@@ -125,6 +143,21 @@ const Signup = () => {
                 )
               }}
             />
+            {passwordMismatched && (
+              <Typography color="red" fontFamily={"Lato"} fontWeight={"700"} textAlign={"center"}>
+                Password doesn't match, try again
+              </Typography>
+            )}
+            {error && (
+              <Typography color="red" fontFamily={"Lato"} fontWeight={"700"} textAlign={"center"}>
+                {error}
+              </Typography>
+            )}
+            {success && (
+              <Typography color="green" fontFamily={"Lato"} fontWeight={"700"} textAlign={"center"}>
+                {success}
+              </Typography>
+            )}
             <Typography>
               Upload your profile picture:
             </Typography>
@@ -134,7 +167,7 @@ const Signup = () => {
               }
             }} onChange={acceptImage}>Upload file</TextField>
             <Button type="submit" sx={{ gridColumn: 'span 1' }} variant="contained">
-              LOGIN
+              REGISTER
             </Button>
           </Box>
 
