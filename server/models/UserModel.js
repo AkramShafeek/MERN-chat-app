@@ -15,7 +15,7 @@ const userSchema = mongoose.Schema({
     },
     pic: {
         type: String,
-        required: true,
+        default: `http://localhost:${process.env.PORT || 3001}/assets/user-avatar.png`,
     },
 }, { timestamps: true });
 

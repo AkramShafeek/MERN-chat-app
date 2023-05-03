@@ -1,23 +1,35 @@
+// config
+require('express-async-errors');
 const dotenv = require('dotenv');
+dotenv.config();
+const path = require('path');
+
+// express
 const express = require('express');
 const app = express();
+
+// database
 const connectToMongo = require('./database/connectToMongo');
-const Test = require('./models/TestModel');
 
-dotenv.config();
+// routes
+const userRouter = require('./routes/userRoutes');
 
+// error handlers
+const errorHandler = require('./middleware/errorHandler');
+
+// middleware to parse json data
 app.use(express.json());
+//middleware to server static files
+app.use('/assets',express.static(path.join(__dirname,'public/assets')));
 
-app.get('/', (req, res) => {
-    res.send("Hello World!");
-})
-app.post('/testDb',(req,res)=>{
-    console.log(req.body);
-    Test.create(req.body);
-    res.send('ok');
-})
+// user router
+app.use('/user/auth/',userRouter);
+
+// error handler
+app.use(errorHandler);
 
 
+// server start
 const port = process.env.PORT || 3001
 
 const startServer = async () => { 
