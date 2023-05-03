@@ -1,25 +1,36 @@
 const User = require('../models/UserModel');
+const generateToken = require('../database/generateToken');
 
-const login = (req, res) => {
-    console.log(req.body);
-    throw new Error('test error');
-    // res.send('ok');
+const login = async (req, res) => {
+
+  const { email, password } = req.body;
+  const user = await User.findOne({ email: email });
+
+  if (user && (await user.matchPassword(password))) {
+    user.password = undefined;
+    const token = generateToken(user._id);
+    res.status(200).json({ token, user });
+  }
+  else {
+    throw new Error('Invalid Email or Password');
+  }
+
 }
 const register = async (req, res) => {
-    console.log(req.body);
-    const { name, email, password } = req.body;
-    if (!name || !email || !password)
-        throw new Error('Bad request, user credentials not provided');
 
-    const userExists = await User.findOne({ email: req.body.email });
-    if (userExists)
-        throw new Error('User already exists');
+  const { name, email, password } = req.body;
+  if (!name || !email || !password)
+    throw new Error('Bad request, user credentials not provided');
 
-    let user = await User.create(req.body);
-    user.password = undefined;
-    
-    console.log(user);
-    res.status(200).json(user);
+  const userExists = await User.findOne({ email: req.body.email });
+  if (userExists)
+    throw new Error('User already exists');
+
+  let user = await User.create(req.body);
+  user.password = undefined;
+
+  console.log(user);
+  res.status(200).json(user);
 }
 
 
