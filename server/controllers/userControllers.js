@@ -2,7 +2,7 @@ const User = require('../models/UserModel');
 const generateToken = require('../database/generateToken');
 
 const login = async (req, res) => {
-  console.log('server was hit');
+  // console.log('server was hit');
   const { email, password } = req.body;
   const user = await User.findOne({ email: email });
 
@@ -29,9 +29,22 @@ const register = async (req, res) => {
   let user = await User.create(req.body);
   user.password = undefined;
 
-  console.log(user);
+  // console.log(user);
   res.status(200).json(user);
 }
 
+const getAllUsers = async (req, res) => {
+  const keyword = req.query.searchuser ? {
+    $or: [
+      { name: { $regex: req.query.searchuser, $options: "i" } },
+      { email: { $regex: req.query.searchuser, $options: "i" } }
+    ]
+  } : {};
 
-module.exports = { login, register };
+  const users = await User.find(keyword);
+
+  res.status(200).send(users);
+}
+
+
+module.exports = { login, register, getAllUsers };
