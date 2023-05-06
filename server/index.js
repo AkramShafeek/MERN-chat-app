@@ -27,7 +27,7 @@ app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 // user router
 app.use('/user/auth/', userRouter);
 // chat router
-app.use('/chat/', chatRouter);
+app.use('/api/chat/', chatRouter);
 
 // error handler
 app.use(errorHandler);

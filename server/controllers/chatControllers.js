@@ -1,4 +1,5 @@
 const Chat = require('../models/ChatModel');
+const User = require('../models/UserModel');
 
 const fetchChat = (req, res) => {
 
@@ -18,7 +19,7 @@ const accessChat = async (req, res) => {
       { users: { $elemMatch: { $eq: req.user._id } } },
       { users: { $elemMatch: { $eq: userId } } },
     ]
-  }).populate("users", "password").populate("latesMessage");
+  }).populate("users", "-password").populate("latestMessage");
 
   isChat = await User.populate(isChat, { path: 'latestMessage.sender', select: 'name pic email' });
 
@@ -33,7 +34,7 @@ const accessChat = async (req, res) => {
 
     try {
       const createdChat = await Chat.create(chatData);
-      const fullChat = await Chat.findOne({_id: createdChat._id}).populate("users", "password");
+      const fullChat = await Chat.findOne({_id: createdChat._id}).populate("users", "-password");
 
       res.status(200).send(fullChat);
     } catch (error) {
