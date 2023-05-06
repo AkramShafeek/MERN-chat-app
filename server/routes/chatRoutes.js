@@ -5,12 +5,15 @@ const authenticationMiddleware = require('../middleware/auth');
 
 // get routes
 router.route('/').get(authenticationMiddleware, fetchChat)
-router.route('/rename').get(authenticationMiddleware, renameGroup);
 
 // post routes
 router.route('/').post(authenticationMiddleware, accessChat);
 router.route('/group').post(authenticationMiddleware, createGroupChat);
-router.route('/groupadd').post(authenticationMiddleware, addToGroup);
-router.route('/groupremove').post(authenticationMiddleware, removeFromGroup);
+
+//put routes
+router.route('/grouprename').put(authenticationMiddleware, renameGroup);
+router.route('/groupadd').put(authenticationMiddleware, addToGroup);
+router.route('/groupremove').put(authenticationMiddleware, removeFromGroup);
+
 
 module.exports = router;
