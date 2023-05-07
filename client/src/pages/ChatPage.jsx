@@ -1,6 +1,8 @@
+import SideDrawer from "../components/SideDrawer";
+
 const ChatPage = () => {
     return (
-        <div>Hello Friends</div>
+        <SideDrawer></SideDrawer>
     );
 };
 
