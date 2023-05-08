@@ -1,8 +1,8 @@
-import SideDrawer from "../components/SideDrawer";
+import Navbar from "../components/Navbar";
 
 const ChatPage = () => {
     return (
-        <SideDrawer></SideDrawer>
+        <Navbar />
     );
 };
 

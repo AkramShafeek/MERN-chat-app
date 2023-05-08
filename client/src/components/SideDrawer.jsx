@@ -1,98 +1,36 @@
-import { Avatar, Box, Button, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
-import { useState } from "react";
-import { SearchOutlined } from "@mui/icons-material";
-import NotificationsIcon from '@mui/icons-material/Notifications';
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
+import Button from '@mui/material/Button';
+import { useState } from 'react';
+import { SearchOutlined } from '@mui/icons-material';
 
-const SideDrawer = () => {
-  const [search, setSearch] = useState("");
-  const [searchResult, setSearchResult] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [loadingChat, setLoadingChat] = useState();
-  const [anchorElNotifications, setAnchorElNotifications] = useState(null);
-  const [anchorElProfile, setAnchorElProfile] = useState(null);
-  const notificationsOpen = Boolean(anchorElNotifications);
-  const ProfileOpen = Boolean(anchorElProfile);
+export default function SideDrawer() {
 
-  const handleClickNotifications = (event) => {
-    setAnchorElNotifications(event.currentTarget);
+  const [open, setOpen] = useState(false);
+
+  const toggleDrawer = () => {
+    setOpen(!open);
   };
-  const handleClickProfile = (event) => {
-    setAnchorElProfile(event.currentTarget);
-  };
-  const handleNotificationsClose = () => {
-    setAnchorElNotifications(null);
-  };
-  const handleProfileClose = () => {
-    setAnchorElProfile(null);
-  };
+
+  const buttonStyles = {
+    padding: "0.5rem 1rem",
+    display: "flex",
+    gap: "10px"
+  }
   return (
-    <>
-      <Box
-        display={"flex"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-        backgroundColor="white"
-        width="100%"
-        padding="10px 15px"
+    <Box>
+      <Button sx={buttonStyles} variant="outlined" onClick={toggleDrawer}>
+        Search users
+        <SearchOutlined />
+      </Button>
+      <Drawer
+        anchor={'right'}
+        open={open}
+        onClose={toggleDrawer}
       >
-        <Tooltip title="Search users">
-          <Button sx={{
-            padding: "0.5rem 1rem",
-            display: "flex",
-            gap: "10px"
-          }} variant="outlined">
-            Search users
-            <SearchOutlined />
-          </Button>
-        </Tooltip>
-        <Typography fontWeight="700" variant="h3" color="primary" >MERN-chat</Typography>
-        <Box display={"flex"} gap={"1rem"} alignItems={"center"}>
-          <Tooltip title="Message notifications">
-            <IconButton onClick={handleClickNotifications}>
-              <NotificationsIcon />
-            </IconButton>
-          </Tooltip>
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorElNotifications}
-            open={notificationsOpen}
-            onClose={handleNotificationsClose}
-            MenuListProps={{
-              'aria-labelledby': 'basic-button',
-            }}
-            PaperProps={{
-              elevation: 3
-            }}
-          >
-            <MenuItem>Your new messages will appear here</MenuItem>
-          </Menu>
-          <Tooltip title="Profile Options">
-            <IconButton>
-              <Avatar onClick={handleClickProfile}>P</Avatar>
-            </IconButton>
-          </Tooltip>
-          <Menu
-            id="basic-menu"
-            anchorEl={anchorElProfile}
-            open={ProfileOpen}
-            onClose={handleProfileClose}
-            MenuListProps={{
-              'aria-labelledby': 'basic-button',
-            }}
-            PaperProps={{
-              elevation: 3
-            }}
-            sx={{
-              marginTop: "10px"
-            }}
-          >
-            <MenuItem>Logout</MenuItem>
-          </Menu>
-        </Box>
-      </Box>
-    </>
+        Here you can find the users to chat with
+      </Drawer>
+    </Box>
   );
 }
-
-export default SideDrawer;
