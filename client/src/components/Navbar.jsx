@@ -2,8 +2,10 @@ import { Avatar, Box, IconButton, Menu, MenuItem, Tooltip, Typography } from "@m
 import { useState } from "react";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SideDrawer from "./SideDrawer";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
+  const pic = useSelector((store) => store.user.userInfo.pic);
   const [anchorElNotifications, setAnchorElNotifications] = useState(null);
   const [anchorElProfile, setAnchorElProfile] = useState(null);
   const notificationsOpen = Boolean(anchorElNotifications);
@@ -65,7 +67,9 @@ const Navbar = () => {
         {/* PROFILE OPTIONS */}
         <Tooltip title="Profile Options">
           <IconButton onClick={handleClick.profile}>
-            <Avatar>P</Avatar>
+            <Avatar>
+              {pic ? <img src={pic} style={{ height: "100%", width: "100%", objectFit: "cover" }} /> : "P"}
+            </Avatar>
           </IconButton>
         </Tooltip>
         <Menu
