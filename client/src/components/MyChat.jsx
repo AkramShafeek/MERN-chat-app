@@ -2,7 +2,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux"
 import { loadChat, selectChat } from "../redux/features/chatSlice";
 import { useEffect } from "react";
-import { Avatar, Box, Button, Divider, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 
 
@@ -60,19 +60,24 @@ const MyChat = () => {
     textAlign: 'center'
   }
 
+  const containerStyles = {
+    display: "flex",
+    flexDirection: "column",
+    gap: "1.5rem",
+    alignItems: "center",
+    backgroundColor: "white",
+    padding: "1rem",
+    height: "90%",
+    width: "31%",
+    minWidth: "280px",
+    margin: "10px",
+    borderRadius: "10px",
+  }
+
   return (
-    <Box
-      display={"flex"}
-      flexDirection={"column"}
-      gap={"1.5rem"}
-      alignItems={"center"}
-      backgroundColor="white"
-      padding={"1rem"}
-      height={"90%"}
-      width={"31%"}
-      minWidth={"280px"}
-      margin={"10px"}
-      borderRadius={"10px"}
+    <Paper
+      sx={containerStyles}
+      elevation={0}
     >
       <Box
         width={"100%"}
@@ -122,7 +127,7 @@ const MyChat = () => {
           )
         })}
       </Stack>}
-    </Box>
+    </Paper>
   )
 }
 

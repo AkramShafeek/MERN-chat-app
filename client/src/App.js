@@ -6,10 +6,11 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { createTheme } from "@mui/material";
 import { themeSettings } from "./theme";
 import { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 function App() {
-  const [mode, setMode] = useState('light');
-  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+  const uiMode = useSelector((store) => store.ui.theme);
+  const theme = useMemo(() => createTheme(themeSettings(uiMode)), [uiMode]);
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>

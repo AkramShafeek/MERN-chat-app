@@ -1,11 +1,17 @@
-import { Avatar, Box, IconButton, Menu, MenuItem, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, IconButton, Menu, MenuItem, Paper, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SideDrawer from "./SideDrawer";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleMode } from "../redux/features/uiModeSlice";
+import LightModeIcon from '@mui/icons-material/LightMode';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
 
 const Navbar = () => {
   const pic = useSelector((store) => store.user.userInfo.pic);
+  const uiMode = useSelector((store) => store.ui.theme);
+  const dispatch = useDispatch();
+
   const [anchorElNotifications, setAnchorElNotifications] = useState(null);
   const [anchorElProfile, setAnchorElProfile] = useState(null);
   const notificationsOpen = Boolean(anchorElNotifications);
@@ -17,6 +23,9 @@ const Navbar = () => {
     },
     profile: (event) => {
       setAnchorElProfile(event.currentTarget);
+    },
+    toggleUi: () => {
+      dispatch(toggleMode());
     }
   }
   const handleClose = {
@@ -34,16 +43,22 @@ const Navbar = () => {
     alignItems: "center",
     backgroundColor: "white",
     width: "100%",
-    padding: "10px 1.5rem"
+    padding: "10px 1.5rem",
+    borderRadius: "0px"
   }
   return (
-    <Box sx={navbarStyles}>
+    <Paper sx={navbarStyles} elevation={0}>
       {/* LOGO TEXT */}
       <Typography fontWeight="700" variant="h3" color="primary" >MERN-chat</Typography>
 
       <Box display={"flex"} gap={"1rem"} alignItems={"center"}>
         {/* SIDE DRAWER FOR SEARCH USERS */}
         <SideDrawer />
+
+        {/* UI MODE TOGGLER */}
+        <IconButton onClick={handleClick.toggleUi}>
+          {uiMode === "light" ? <LightModeIcon /> : <DarkModeIcon />}
+        </IconButton>
 
         {/* NOTIFICATIONS */}
         <Tooltip title="Message notifications">
@@ -88,7 +103,7 @@ const Navbar = () => {
           <MenuItem>Logout</MenuItem>
         </Menu>
       </Box>
-    </Box>
+    </Paper>
   );
 }
 
