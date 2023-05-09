@@ -6,11 +6,14 @@ import { useState } from 'react';
 import { SearchOutlined } from '@mui/icons-material';
 import { Skeleton, TextField } from '@mui/material';
 import UsersList from './UsersList';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import { loadChat } from '../redux/features/chatSlice';
 
 export default function SideDrawer() {
   const token = useSelector((store) => store.user.token);
+  const chat = useSelector((store) => store.chat.data);
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
@@ -26,24 +29,47 @@ export default function SideDrawer() {
   }
 
   const handleSearch = async () => {
-    if(!search)
+    if (!search)
       return;
-    
+
     try {
       setLoading(true);
       const url = `http://localhost:3001/user/auth/allUsers?searchuser=${search}`;
       const config = {
-        headers:{
+        headers: {
           Authorization: `Bearer ${token}`
         }
       }
-      const response = await axios.get(url,config);
+      const response = await axios.get(url, config);
       console.log(response.data);
       setSearchedUsers(response.data);
       setLoading(false);
     } catch (error) {
       console.log(error);
       setLoading(false);
+    }
+  }
+
+  const addUserToChats = async ({ _id }) => {
+    try {
+      const url = "http://localhost:3001/api/chat/";
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      }
+      const response = await axios.post(url, { userId: _id }, config);
+      // console.log(response.data);
+
+      // if received chat is not available in my chat list for display
+      // then append it
+      if (!chat.find(element => element._id === response.data._id))
+        dispatch(loadChat([...chat, response.data]));
+
+      return;
+    } catch (error) {
+      console.log("some error boss");
     }
   }
 
@@ -77,7 +103,7 @@ export default function SideDrawer() {
               <Skeleton animation="wave" height={50} />
               <Skeleton animation="wave" height={50} />
               <Skeleton animation="wave" height={50} />
-            </div> : <UsersList searchedUsers={searchedUsers}/>
+            </div> : <UsersList searchedUsers={searchedUsers} onUserClick={addUserToChats} limit={10}/>
           }
         </Box>
       </Drawer>

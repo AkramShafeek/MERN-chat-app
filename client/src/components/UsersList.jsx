@@ -28,42 +28,31 @@ const UsersList = (props) => {
     return;
 
   const listButtonStyles = {
-    borderRadius: "5px",
     marginTop: "0.5rem",
     borderRadius: "10px"
   }
 
-  const handleClick = async (userId) => {
+  const handleClick = async (user) => {
     try {
-      setLoadingUser(userId);
-      const url = "http://localhost:3001/api/chat/";
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-          "Authorization": `Bearer ${token}`
-        }
-      }
-      const response = await axios.post(url, { userId }, config);
-      console.log(response.data);
-
-      // if received chat is not available in my chat list for display
-      // then append it
-      if (!chat.find(element => element._id === response.data._id))
-        dispatch(loadChat([...chat, response.data]));
-
+      setLoadingUser(user._id);
+      await props.onUserClick(user);
       setLoadingUser(null);
-
     } catch (error) {
-      console.log("some error boss");
+      setLoadingUser(null);
     }
   }
 
   return (
-    <List component="nav" aria-label="mailbox folders" sx={{ position: 'relative' }}>
+    <List component="nav" aria-label="mailbox folders"
+      sx={{
+        position: 'relative',
+        overflowY: props.searchedUsers.length > props.limit ? 'scroll' : 'visible',
+        height: `${props.limit * 73}px`
+      }}>
       {props.searchedUsers?.map((user) => {
         return (
-          <>
-            <ListItemButton key={user._id} sx={listButtonStyles} onClick={() => handleClick(user._id)}>
+          <div key={user._id}>
+            <ListItemButton sx={listButtonStyles} onClick={() => handleClick(user)}>
               <ListItem disablePadding>
                 <ListItemAvatar>
                   <Avatar alt="P" src={user.pic} />
@@ -72,12 +61,16 @@ const UsersList = (props) => {
               </ListItem>
             </ListItemButton>
             {loadingUser === user._id && <LinearProgress sx={{ borderRadius: '10px' }} />}
-          </>
+          </div>
         )
       })
       }
     </List>
   );
+}
+
+UsersList.defaultProps = {
+  limit: 4
 }
 
 export default UsersList;

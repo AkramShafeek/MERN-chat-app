@@ -4,6 +4,7 @@ import { loadChat, selectChat } from "../redux/features/chatSlice";
 import { useEffect } from "react";
 import { Avatar, Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
+import GroupChatModal from "./GroupChatModel";
 
 
 const MyChat = () => {
@@ -88,11 +89,13 @@ const MyChat = () => {
         backgroundColor={palette.primary.main}
         borderRadius={"5px"}>
         <Typography fontWeight={700} fontSize={"15px"} fontFamily={"Lato"} color={"white"}>My Chat</Typography>
-        <Button sx={{
-          backgroundColor: "white", '&:hover': {
-            backgroundColor: "white"
-          }
-        }}>some button +</Button>
+        <GroupChatModal>
+          <Button sx={{
+            backgroundColor: "white", '&:hover': {
+              backgroundColor: "white"
+            }
+          }}>Create Group +</Button>
+        </GroupChatModal>
       </Box>
 
       {/* WELCOME MESSAGE */}
