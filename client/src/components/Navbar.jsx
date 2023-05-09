@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleMode } from "../redux/features/uiModeSlice";
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { useTheme } from "@emotion/react";
 
 const Navbar = () => {
   const pic = useSelector((store) => store.user.userInfo.pic);
@@ -16,6 +17,8 @@ const Navbar = () => {
   const [anchorElProfile, setAnchorElProfile] = useState(null);
   const notificationsOpen = Boolean(anchorElNotifications);
   const ProfileOpen = Boolean(anchorElProfile);
+
+  const { palette } = useTheme();
 
   const handleClick = {
     notifications: (event) => {
@@ -41,7 +44,7 @@ const Navbar = () => {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: palette.background.alt,
     width: "100%",
     padding: "10px 1.5rem",
     borderRadius: "0px"

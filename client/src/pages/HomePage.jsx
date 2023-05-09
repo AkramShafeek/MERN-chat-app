@@ -69,16 +69,16 @@ const HomePage = () => {
           sx={{
             backgroundColor: palette.primary.main,
             padding: "1rem",
-            width: isNonMobile ? "50%" : "100%",
+            width: isNonMobile ? "400px" : "100%",
             borderRadius: "10px"
           }}>
           <Typography align='center' color={"white"}>MERN-chat</Typography>
         </Box>
         <Box
           sx={{
-            // backgroundColor: "white",
+            backgroundColor: palette.background.alt,
             padding: isNonMobile ? "2rem" : "1rem",
-            width: isNonMobile ? "50%" : "100%",
+            width: isNonMobile ? "400px" : "100%",
             borderRadius: "10px",
             border: "1px solid " + palette.primary.light
           }}>

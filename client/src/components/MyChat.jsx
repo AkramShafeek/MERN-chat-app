@@ -42,8 +42,8 @@ const MyChat = () => {
     return (data.users[0]._id === user._id ? data.users[1].pic : data.users[0].pic)
   }
 
-  const handleClick = (chatId) => {
-    dispatch(selectChat(chatId));
+  const handleClick = (chat) => {
+    dispatch(selectChat(chat));
   }
 
   useEffect(() => {
@@ -66,12 +66,11 @@ const MyChat = () => {
     flexDirection: "column",
     gap: "1.5rem",
     alignItems: "center",
-    backgroundColor: "white",
+    backgroundColor: palette.background.alt,
     padding: "1rem",
-    height: "90%",
+    height: "100%",
     width: "31%",
     minWidth: "280px",
-    margin: "10px",
     borderRadius: "10px",
   }
 
@@ -107,23 +106,23 @@ const MyChat = () => {
           return (
             <Box
               key={data._id}
-              backgroundColor={data._id === selectedChat ? palette.primary.light : "transparent"}
-              onClick={() => { handleClick(data._id) }}
-              display={"flex"}
-              alignItems={"center"}
-              gap={"1rem"}
+              onClick={() => { handleClick(data) }}
               sx={{
+                backgroundColor: data._id === selectedChat._id ? palette.primary.light : "transparent",
                 transition: 'all ease-in-out',
                 transitionDuration: '100ms',
                 padding: "0.5rem 1rem",
                 borderRadius: "5px",
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
                 '&:hover': {
-                  backgroundColor: data._id !== selectedChat ? '#f0f0f0' : "",
+                  backgroundColor: data._id !== selectedChat._id ? palette.neutral.light : "",
                   cursor: 'pointer'
                 }
               }}>
               <Avatar alt="P" src={getUserAvatar(data, user)} />
-              <Typography fontWeight={700}>
+              <Typography fontWeight={700} color={data._id === selectedChat._id ? palette.primary.dark : ""}>
                 {getChatName(data, user)}
               </Typography>
             </Box>
