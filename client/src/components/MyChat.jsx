@@ -4,7 +4,8 @@ import { loadChat, selectChat } from "../redux/features/chatSlice";
 import { useEffect } from "react";
 import { Avatar, Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
-import GroupChatModal from "./GroupChatModel";
+import GroupChatModal from "./GroupChatModal";
+import { getChatName, getUserAvatar } from "./utils/getChatDetails";
 
 
 const MyChat = () => {
@@ -29,17 +30,6 @@ const MyChat = () => {
     } catch (error) {
       console.log(error);
     }
-  }
-
-  const getChatName = (data, user) => {
-    if (data.isGroupChat)
-      return data.chatName;
-    return (data.users[0]._id === user._id ? data.users[1].name : data.users[0].name)
-  }
-  const getUserAvatar = (data, user) => {
-    if (data.isGroupChat)
-      return 'http://localhost:3001/assets/group-avatar.png';
-    return (data.users[0]._id === user._id ? data.users[1].pic : data.users[0].pic)
   }
 
   const handleClick = (chat) => {
@@ -108,7 +98,7 @@ const MyChat = () => {
               key={data._id}
               onClick={() => { handleClick(data) }}
               sx={{
-                backgroundColor: data._id === selectedChat._id ? palette.primary.light : "transparent",
+                backgroundColor: data._id === selectedChat?._id ? palette.primary.light : "transparent",
                 transition: 'all ease-in-out',
                 transitionDuration: '100ms',
                 padding: "0.5rem 1rem",
@@ -117,12 +107,12 @@ const MyChat = () => {
                 alignItems: "center",
                 gap: "1rem",
                 '&:hover': {
-                  backgroundColor: data._id !== selectedChat._id ? palette.neutral.light : "",
+                  backgroundColor: data._id !== selectedChat?._id ? palette.neutral.light : "",
                   cursor: 'pointer'
                 }
               }}>
               <Avatar alt="P" src={getUserAvatar(data, user)} />
-              <Typography fontWeight={700} color={data._id === selectedChat._id ? palette.primary.dark : ""}>
+              <Typography fontWeight={700}>
                 {getChatName(data, user)}
               </Typography>
             </Box>

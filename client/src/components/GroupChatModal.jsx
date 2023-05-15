@@ -33,7 +33,7 @@ const GroupChatModal = ({ children }) => {
   const token = useSelector((store) => store.user.token);
   const chat = useSelector((store) => store.chat.data);
   const [open, setOpen] = useState(false);
-  const [groupChatName, setGroupChatName] = useState();
+  const [groupChatName, setGroupChatName] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [searchedUsers, setSearchedUsers] = useState([]);
   const [clearSearchIcon, setClearSearchIcon] = useState(false);
@@ -87,7 +87,7 @@ const GroupChatModal = ({ children }) => {
   }
 
   const createGroup = async () => {
-    if(!groupChatName || !selectedUsers.length)
+    if (!groupChatName || !selectedUsers.length)
       return
     try {
       setCreating(true);
@@ -104,7 +104,7 @@ const GroupChatModal = ({ children }) => {
       // append group chat to my chat display
       dispatch(loadChat([...chat, response.data]));
       setCreating(false);
-      handleClose(null,"group created");
+      handleClose(null, "group created");
       return;
     } catch (error) {
       setCreating(false);
@@ -122,7 +122,7 @@ const GroupChatModal = ({ children }) => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          {creating && <LinearProgress sx={{borderRadius:"10px"}}/>}
+          {creating && <LinearProgress sx={{ borderRadius: "10px" }} />}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} >
             <Typography id="modal-modal-title" variant="h6" fontSize={'19px'} fontWeight={700} fontFamily={"Lato"} color={"primary"}>
               Create group chat
@@ -168,9 +168,9 @@ const GroupChatModal = ({ children }) => {
               <Skeleton animation="wave" height={50} />
               <Skeleton animation="wave" height={50} />
             </div>
-          ) : <UsersList searchedUsers={searchedUsers} onUserClick={addUserToGroup} limit={3} />}
+          ) : <UsersList users={searchedUsers} onUserClick={addUserToGroup} limit={3} />}
           <Box display="flex" gap="1rem" justifyContent={"flex-end"}>
-            <Button variant="contained" sx={{ padding: "0.5rem 2rem" }} disableElevation onClick={createGroup}>Create Group</Button>
+            <Button variant="contained" sx={{ padding: "0.5rem 2rem" }} disableElevation onClick={createGroup} disabled={!(groupChatName && selectedUsers.length)}>Create Group</Button>
           </Box>
         </Box>
       </Modal>

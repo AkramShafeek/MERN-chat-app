@@ -5,6 +5,7 @@ import { demoChats } from "./utils/demoChats";
 const DemoChats = () => {
   const { palette } = useTheme();
   const user = useSelector((store) => store.user.userInfo);
+  const selectedChat = useSelector((store) => store.chat.selectedChat);
   return (
     <Box>
       {demoChats.map((message, index) => {

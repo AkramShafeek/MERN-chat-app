@@ -103,7 +103,7 @@ export default function SideDrawer() {
               <Skeleton animation="wave" height={50} />
               <Skeleton animation="wave" height={50} />
               <Skeleton animation="wave" height={50} />
-            </div> : <UsersList searchedUsers={searchedUsers} onUserClick={addUserToChats} limit={10}/>
+            </div> : <UsersList users={searchedUsers} onUserClick={addUserToChats} limit={10}/>
           }
         </Box>
       </Drawer>

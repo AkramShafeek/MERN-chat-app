@@ -1,24 +1,44 @@
 import { useTheme } from "@emotion/react";
 import { BorderColor, SendRounded } from "@mui/icons-material";
-import { Box, Button, Divider, IconButton, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, Divider, IconButton, TextField, Typography } from "@mui/material";
 import DemoChats from "./DemoChats";
+import { selectChat } from "../redux/features/chatSlice";
+import { getChatName, getUserAvatar } from "./utils/getChatDetails";
+import { useSelector } from "react-redux";
+import { useState } from "react";
+import ChatOptionsModal from "./ChatOptionsModal";
 
 const Chat = () => {
 
   const { palette } = useTheme();
+  const user = useSelector((store) => store.user.userInfo);
+  const selectedChat = useSelector((store) => store.chat.selectedChat);
+  const [isOpen, setIsOpen] = useState(false);
 
   const containerStyles = {
     display: "flex",
     flexDirection: "column",
-    // gap: '1rem',
     alignItems: "center",
     backgroundColor: palette.background.alt,
     justifyContent: "space-between",
-    // padding: "1rem",
     height: "100%",
     width: "68%",
     minWidth: "620px",
     borderRadius: "10px",
+  }
+
+  const openChatOptions = () => {
+
+  }
+
+  if (!selectedChat) {
+    return (
+      <Box sx={containerStyles}>
+        {/* here insert the component that displays a message
+        when no chat is selected */}
+        <div>Select a chat to continue</div>
+      </Box>
+    )
   }
   return (
     <Box sx={containerStyles}>
@@ -32,18 +52,23 @@ const Chat = () => {
           borderBottom: '1px solid',
           borderColor: palette.neutral.light
         }}>
-        <Typography variant="h3">Header</Typography>
-        <Button>Options</Button>
+        <Box display={"flex"} gap="1rem" alignItems="center">
+          <Avatar src={getUserAvatar(selectedChat, user)}></Avatar>
+          <Typography variant="h3">{getChatName(selectedChat, user)}</Typography>
+        </Box>
+        <ChatOptionsModal>
+          <Button>options</Button>
+        </ChatOptionsModal>
       </Box>
       {/* <Divider sx={{width:'100%'}}/> */}
       <Box
         height={'100%'}
-        width={"100%"}        
+        width={"100%"}
         display={"flex"}
         flexDirection={"column"}
         justifyContent={"flex-end"}
         padding={"1rem"}
-        >
+      >
         <DemoChats />
       </Box>
       <Box height={'15%'} width='100%'

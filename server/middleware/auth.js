@@ -6,7 +6,7 @@ const authenticationMiddleware = async (req, res, next) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        throw new CustomError('No token provided', 401);
+        throw new Error('No token provided');
     }
 
     const token = authHeader.split(' ')[1];

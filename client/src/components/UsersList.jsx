@@ -24,7 +24,7 @@ const UsersList = (props) => {
 
   const [loadingUser, setLoadingUser] = useState(null);
 
-  if (!props.searchedUsers)
+  if (!props.users)
     return;
 
   const listButtonStyles = {
@@ -46,10 +46,10 @@ const UsersList = (props) => {
     <List component="nav" aria-label="mailbox folders"
       sx={{
         position: 'relative',
-        overflowY: props.searchedUsers.length > props.limit ? 'scroll' : 'visible',
-        height: `${props.limit * 73}px`
+        overflowY: props.users.length > props.limit ? 'scroll' : 'visible',
+        height: props.users.length > props.limit ? `${props.limit * 73}px` : `${props.users.length * 73}px`
       }}>
-      {props.searchedUsers?.map((user) => {
+      {props.users?.map((user) => {
         return (
           <div key={user._id}>
             <ListItemButton sx={listButtonStyles} onClick={() => handleClick(user)}>
