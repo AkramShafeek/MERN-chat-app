@@ -85,8 +85,8 @@ const Navbar = () => {
         {/* PROFILE OPTIONS */}
         <Tooltip title="Profile Options">
           <IconButton onClick={handleClick.profile}>
-            <Avatar>
-              {pic ? <img src={pic} style={{ height: "100%", width: "100%", objectFit: "cover" }} /> : "P"}
+            <Avatar src={pic}>
+              {/* {pic ? <img src={pic} style={{ height: "100%", width: "100%", objectFit: "cover" }} /> : "P"} */}
             </Avatar>
           </IconButton>
         </Tooltip>

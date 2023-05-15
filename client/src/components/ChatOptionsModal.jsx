@@ -4,7 +4,7 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react';
-import { Avatar, Button, IconButton, InputAdornment, Skeleton, TextField } from '@mui/material';
+import { Avatar, Button, IconButton, InputAdornment, Menu, MenuItem, Skeleton, TextField } from '@mui/material';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import { useDispatch, useSelector } from 'react-redux';
 import searchUsers from './utils/searchUsers';
@@ -14,7 +14,8 @@ import axios from 'axios';
 import { loadChat, selectChat } from '../redux/features/chatSlice';
 import LinearProgress from '@mui/material/LinearProgress';
 import { getChatName, getOppUserEmail, getUserAvatar } from './utils/getChatDetails';
-import { EditRounded } from '@mui/icons-material';
+import { AdminPanelSettings, DeleteOutlineRounded, DeleteRounded, EditRounded } from '@mui/icons-material';
+import { useEffect } from 'react';
 
 const style = {
   position: 'absolute',
@@ -33,22 +34,41 @@ const style = {
 };
 
 const ChatOptionsModal = ({ children }) => {
-  const token = useSelector((store) => store.user.token);
+  // redux states
   const chat = useSelector((store) => store.chat.data);
-  const selectedChat = useSelector((store) => store.chat.selectedChat);
+  const token = useSelector((store) => store.user.token);
   const user = useSelector((store) => store.user.userInfo);
-  const [open, setOpen] = useState(false);
+  const selectedChat = useSelector((store) => store.chat.selectedChat);
 
+  // local states
+  const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [isShowEdit, setShowEdit] = useState(false);
   const [isEditOn, setIsEditOn] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const [newGroupChatName, setNewGroupChatName] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [modifiedChat, setModifiedChat] = useState(null);
+
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    if (modifiedChat != null) {
+      const newChat = chat.filter((element) => element._id !== modifiedChat._id);
+      // reload chat list with new group name
+      dispatch(loadChat([modifiedChat, ...newChat]));
+      // reselect chat with new group name
+      dispatch(selectChat(modifiedChat));
+    }
+  }, [modifiedChat]);
+
+  // theme
   const { palette } = useTheme();
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setOpen(true);
+  }
+
   const handleClose = (event, reason) => {
     if (reason === "backdropClick")
       return;
@@ -57,30 +77,49 @@ const ChatOptionsModal = ({ children }) => {
     setIsEditOn(false);
   };
 
-  const clearSearch = (event) => {
 
+  const handleUserClick = (user, event) => {
+    setAnchorEl(event.currentTarget);
+    setShowUserMenu(true);
+    console.log("User " + user.name + " will be deleted here\n");
+    setSelectedUser(user);
   }
 
-  const handleSearch = async (event) => {
-
-  }
-
-  const addUserToGroup = async (user) => {
-
-  }
-  const removeUser = async (userId) => {
-
-  }
-
-  const showEdit = () => {
-    setShowEdit(true);
-  }
-  const hideEdit = () => {
-    setShowEdit(false);
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setShowUserMenu(false);
   }
 
   const handleGroupNameChange = (event) => {
     setNewGroupChatName(event.target.value);
+  }
+
+  const removeUserFromGroup = async () => {
+    const payload = {
+      chatId: selectedChat._id,
+      userId: selectedUser._id,
+    }
+    const url = "http://localhost:3001/api/chat/groupremove";
+    const config = {
+      headers: {
+        'Content-type': "application/json",
+        'Authorization': `Bearer ${token}`,
+      }
+    }
+    try {
+      setLoading(true);
+      const response = await axios.put(url, payload, config);
+
+      // close the user menu
+      setShowUserMenu(false);
+      setModifiedChat(response.data);
+
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setShowUserMenu(false);
+      setLoading(false);
+    }
   }
 
   const saveNewGroupName = async () => {
@@ -98,9 +137,7 @@ const ChatOptionsModal = ({ children }) => {
     try {
       setLoading(true);
       const response = await axios.put(url, payload, config);
-      const newChat = chat.filter((element) => element._id !== response.data._id);
-      dispatch(loadChat([response.data, ...newChat]));
-      dispatch(selectChat(response.data));
+      setModifiedChat(response.data);
       setIsEditOn(false);
       setLoading(false);
     } catch (error) {
@@ -139,8 +176,6 @@ const ChatOptionsModal = ({ children }) => {
               fontWeight={700}
               fontFamily={"Lato"}
               color={"primary"}
-              onMouseEnter={showEdit}
-              onMouseLeave={hideEdit}
               sx={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
               {getChatName(selectedChat, user)}
               {selectedChat.isGroupChat && <IconButton onClick={() => setIsEditOn(true)}>
@@ -151,11 +186,49 @@ const ChatOptionsModal = ({ children }) => {
               {getOppUserEmail(selectedChat, user)}
             </Typography>
           </div>
-          {selectedChat.isGroupChat && <UsersList users={selectedChat.users} onUserClick={addUserToGroup} limit={3} />}
-          <Box display="flex" gap="1rem" justifyContent={"center"}>
-            {/* <Button variant="outlined" sx={{ padding: "0.5rem 2rem" }}>Delete Users</Button>
-            <Button variant="contained" sx={{ padding: "0.5rem 2rem" }} disableElevation>Save</Button> */}
-          </Box>
+          {selectedChat.isGroupChat && <UsersList users={selectedChat.users} onUserClick={handleUserClick} limit={3} />}
+          <Menu
+            anchorEl={anchorEl}
+            open={showUserMenu}
+            onClose={handleMenuClose}
+            anchorOrigin={{
+              vertical: 'center',
+              horizontal: 'right',
+            }}
+            transformOrigin={{
+              vertical: 'center',
+              horizontal: 'right',
+            }}
+            MenuListProps={{
+              'aria-labelledby': 'basic-button',
+            }}
+            PaperProps={{
+              elevation: 3
+            }}>
+            <MenuItem>
+              <IconButton
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: "10px",
+                  padding: '0',
+                  '&:hover': {
+                    backgroundColor: 'transparent'
+                  }
+                }} disableRipple>
+                <div style={{
+                  width: "100%",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+                  onClick={removeUserFromGroup}>
+                  <Typography fontSize="15px">Delete User</Typography>
+                  <DeleteRounded color='error' />
+                </div>
+              </IconButton>
+            </MenuItem>
+          </Menu>
         </Box>
       </Modal>
     </div >

@@ -1,8 +1,8 @@
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux"
 import { loadChat, selectChat } from "../redux/features/chatSlice";
-import { useEffect } from "react";
-import { Avatar, Box, Button, Divider, Paper, Stack, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Avatar, Box, Button, Divider, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import GroupChatModal from "./GroupChatModal";
 import { getChatName, getUserAvatar } from "./utils/getChatDetails";
@@ -15,10 +15,13 @@ const MyChat = () => {
   const selectedChat = useSelector((store) => store.chat.selectedChat);
   const dispatch = useDispatch();
 
+  const [loading, setLoading] = useState(false);
+
   const { palette } = useTheme();
 
   const fetchChats = async () => {
     try {
+      setLoading(true);
       const config = {
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -27,8 +30,10 @@ const MyChat = () => {
       const url = "http://localhost:3001/api/chat"
       const response = await axios.get(url, config);
       dispatch(loadChat(response.data));
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   }
 
@@ -55,7 +60,6 @@ const MyChat = () => {
     display: "flex",
     flexDirection: "column",
     gap: "1.5rem",
-    alignItems: "center",
     backgroundColor: palette.background.alt,
     padding: "1rem",
     height: "100%",
@@ -87,11 +91,23 @@ const MyChat = () => {
         </GroupChatModal>
       </Box>
 
+
+      {loading &&
+        <div width="100%">
+          <Skeleton animation="wave" height={60} />
+          <Skeleton animation="wave" height={60} />
+          <Skeleton animation="wave" height={60} />
+          <Skeleton animation="wave" height={60} />
+        </div>}
       {/* WELCOME MESSAGE */}
-      {chat.length === 0 && <Box sx={welcomeStyle}><Typography fontFamily={"Lato"} fontWeight={300} fontSize={"25px"} color="#9c9c9c">You haven't talked to anybody recently :(</Typography></Box>
+      {
+        !loading && chat.length === 0 && <Box sx={welcomeStyle}>
+          <Typography fontFamily={"Lato"} fontWeight={300} fontSize={"25px"} color="#9c9c9c">
+            You haven't talked to anybody recently :(
+          </Typography>
+        </Box>
       }
-      {chat.length !== 0 && <Stack spacing={2} width={"100%"}>
-        {/* {chat.length === 0 && <Box><Typography fontFamily={"Lato"} fontWeight={300} fontSize={"15px"} color="#9c9c9c">Welcome to MERN-chat where you can waste some more time apart from other social medias</Typography></Box>} */}
+      {!loading && chat.length !== 0 && <Stack spacing={2} width={"100%"}>
         {chat.map((data) => {
           return (
             <Box

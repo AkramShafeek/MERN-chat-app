@@ -29,13 +29,16 @@ const UsersList = (props) => {
 
   const listButtonStyles = {
     marginTop: "0.5rem",
+    marginRight: "0.5rem",
     borderRadius: "10px"
   }
 
-  const handleClick = async (user) => {
+  const handleClick = async (user, event) => {
     try {
       setLoadingUser(user._id);
-      await props.onUserClick(user);
+      // this function will give back the event of click
+      // use it if needed
+      await props.onUserClick(user, event);
       setLoadingUser(null);
     } catch (error) {
       setLoadingUser(null);
@@ -52,7 +55,7 @@ const UsersList = (props) => {
       {props.users?.map((user) => {
         return (
           <div key={user._id}>
-            <ListItemButton sx={listButtonStyles} onClick={() => handleClick(user)}>
+            <ListItemButton sx={listButtonStyles} onClick={(event) => handleClick(user, event)}>
               <ListItem disablePadding>
                 <ListItemAvatar>
                   <Avatar alt="P" src={user.pic} />
