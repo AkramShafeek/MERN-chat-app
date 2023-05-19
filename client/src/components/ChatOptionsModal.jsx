@@ -7,15 +7,18 @@ import { useState } from 'react';
 import { Avatar, Button, IconButton, InputAdornment, Menu, MenuItem, Skeleton, TextField } from '@mui/material';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import { useDispatch, useSelector } from 'react-redux';
-import searchUsers from './utils/searchUsers';
+import searchUsers from './utils/util functions/searchUsers';
 import UsersList from './UsersList';
 import { useTheme } from '@emotion/react';
 import axios from 'axios';
 import { loadChat, selectChat } from '../redux/features/chatSlice';
 import LinearProgress from '@mui/material/LinearProgress';
-import { getChatName, getOppUserEmail, getUserAvatar } from './utils/getChatDetails';
+import { getChatName, getOppUserEmail, getUserAvatar } from './utils/util functions/getChatDetails';
 import { AdminPanelSettings, DeleteOutlineRounded, DeleteRounded, EditRounded } from '@mui/icons-material';
+import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import { useEffect } from 'react';
+import AddUserToGroup from './AddUserToGroup';
+import UsersSearchBar from './utils/util components/UsersSearchBar';
 
 const style = {
   position: 'absolute',
@@ -159,10 +162,12 @@ const ChatOptionsModal = ({ children }) => {
       >
         <Box sx={style}>
           {loading && <LinearProgress sx={{ borderRadius: "10px" }} />}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }} >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }} >
+            <IconButton onClick={handleClose}><ArrowBackRoundedIcon /></IconButton>
             <IconButton onClick={handleClose}><CloseRoundedIcon /></IconButton>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }} >
+          <UsersSearchBar />
+          {/* <div style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }} >
             <Avatar src={getUserAvatar(selectedChat, user)} sx={{ width: '4rem', height: '4rem' }}></Avatar>
             {isEditOn && <><TextField placeholder="Enter group name" onChange={handleGroupNameChange} value={newGroupChatName}></TextField>
               <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -187,6 +192,7 @@ const ChatOptionsModal = ({ children }) => {
             </Typography>
           </div>
           {selectedChat.isGroupChat && <UsersList users={selectedChat.users} onUserClick={handleUserClick} limit={3} />}
+          {selectedChat.isGroupChat && <AddUserToGroup />}
           <Menu
             anchorEl={anchorEl}
             open={showUserMenu}
@@ -228,7 +234,7 @@ const ChatOptionsModal = ({ children }) => {
                 </div>
               </IconButton>
             </MenuItem>
-          </Menu>
+              </Menu>*/}
         </Box>
       </Modal>
     </div >

@@ -1,18 +1,18 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import { useState } from 'react';
-import { Button, IconButton, InputAdornment, Skeleton, TextField } from '@mui/material';
-import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
-import { useDispatch, useSelector } from 'react-redux';
-import searchUsers from './utils/searchUsers';
-import UsersList from './UsersList';
-import { useTheme } from '@emotion/react';
 import axios from 'axios';
-import { loadChat } from '../redux/features/chatSlice';
+import UsersList from './UsersList';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
+import searchUsers from './utils/util functions/searchUsers';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import { useState } from 'react';
+import { useTheme } from '@emotion/react';
+import { loadChat } from '../redux/features/chatSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { Button, IconButton, InputAdornment, Skeleton, TextField } from '@mui/material';
 
 const style = {
   position: 'absolute',

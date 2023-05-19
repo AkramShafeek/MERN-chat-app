@@ -2,7 +2,6 @@ import axios from "axios";
 
 const searchUsers = async (search, token) => {
 
-
   if (!search)
     return;
 
@@ -17,7 +16,7 @@ const searchUsers = async (search, token) => {
     // console.log(response.data);
     return response.data
   } catch (error) {
-    console.log(error);
+    console.log(error.response.data.msg);
   }
 }
 

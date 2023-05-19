@@ -1,4 +1,4 @@
-import { Avatar, Box, IconButton, Menu, MenuItem, Paper, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, IconButton, InputAdornment, Menu, MenuItem, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SideDrawer from "./SideDrawer";
@@ -7,16 +7,48 @@ import { toggleMode } from "../redux/features/uiModeSlice";
 import LightModeIcon from '@mui/icons-material/LightMode';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { useTheme } from "@emotion/react";
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
+import searchUsers from "./utils/util functions/searchUsers";
+import NavbarSearchUser from "./NavbarSearchUser";
 
 const Navbar = () => {
   const pic = useSelector((store) => store.user.userInfo.pic);
   const uiMode = useSelector((store) => store.ui.theme);
+  const token = useSelector((store) => store.user.token);
   const dispatch = useDispatch();
 
   const [anchorElNotifications, setAnchorElNotifications] = useState(null);
   const [anchorElProfile, setAnchorElProfile] = useState(null);
   const notificationsOpen = Boolean(anchorElNotifications);
   const ProfileOpen = Boolean(anchorElProfile);
+
+  const [searchValue, setSearchValue] = useState("");
+  const [clearSearchIcon, setClearSearchIcon] = useState(false);
+
+
+  const clearSearch = () => {
+    setSearchValue("");
+    setClearSearchIcon(false);
+  }
+  const handleChange = async (event) => {
+    setSearchValue(event.target.value);
+    var data;
+    if (event.target.value) {
+      try {
+        // setLoading(true);
+        setClearSearchIcon(true);
+        data = await searchUsers(event.target.value, token);
+        // setSearchedUsers(data);
+        // setLoading(false);
+      } catch (error) {
+        console.log(error)
+        // setLoading(false);
+      }
+    }
+    else
+      setClearSearchIcon(false);
+  }
 
   const { palette } = useTheme();
 
@@ -47,16 +79,19 @@ const Navbar = () => {
     backgroundColor: palette.background.alt,
     width: "100%",
     padding: "10px 1.5rem",
-    borderRadius: "0px"
+    borderRadius: "0px",
   }
   return (
     <Paper sx={navbarStyles} elevation={0}>
       {/* LOGO TEXT */}
       <Typography fontWeight="700" variant="h3" color="primary" >MERN-chat</Typography>
 
+      {/* SEARCH BAR TO SEARCH USERS AND CHAT */}
+      <NavbarSearchUser />
+
       <Box display={"flex"} gap={"1rem"} alignItems={"center"}>
         {/* SIDE DRAWER FOR SEARCH USERS */}
-        <SideDrawer />
+        {/* <SideDrawer /> */}
 
         {/* UI MODE TOGGLER */}
         <IconButton onClick={handleClick.toggleUi}>

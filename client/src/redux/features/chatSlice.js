@@ -6,7 +6,7 @@ const initialState = {
 }
 
 const chatSlice = createSlice({
-  name: 'userInfo',
+  name: 'chatData',
   initialState,
   reducers: {
     clearChat: (state) => {

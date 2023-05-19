@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Avatar, Box, Button, Divider, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import GroupChatModal from "./GroupChatModal";
-import { getChatName, getUserAvatar } from "./utils/getChatDetails";
+import { getChatName, getUserAvatar } from "./utils/util functions/getChatDetails";
 
 
 const MyChat = () => {

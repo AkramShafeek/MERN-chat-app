@@ -1,8 +1,8 @@
 import { useTheme } from "@emotion/react";
-import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Skeleton, Typography } from "@mui/material";
+import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Skeleton, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import MySnackbar from "./utils/MySnackbar";
+import MySnackbar from "./utils/util components/MySnackbar";
 import { loadChat } from "../redux/features/chatSlice";
 import LinearProgress from '@mui/material/LinearProgress';
 import { useState } from "react";
@@ -33,12 +33,20 @@ const UsersList = (props) => {
     borderRadius: "10px"
   }
 
+  const chumma = () => {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, 1000);
+    });
+  }
+
   const handleClick = async (user, event) => {
     try {
       setLoadingUser(user._id);
       // this function will give back the event of click
       // use it if needed
-      await props.onUserClick(user, event);
+      await await chumma();
       setLoadingUser(null);
     } catch (error) {
       setLoadingUser(null);
@@ -46,7 +54,7 @@ const UsersList = (props) => {
   }
 
   return (
-    <List component="nav" aria-label="mailbox folders"
+    <Stack component="nav" aria-label="mailbox folders"
       sx={{
         position: 'relative',
         overflowY: props.users.length > props.limit ? 'scroll' : 'visible',
@@ -68,7 +76,7 @@ const UsersList = (props) => {
         )
       })
       }
-    </List>
+    </Stack>
   );
 }
 

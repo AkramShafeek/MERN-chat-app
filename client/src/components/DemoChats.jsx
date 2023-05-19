@@ -1,7 +1,7 @@
 import { useTheme } from "@emotion/react"
 import { Avatar, Box } from "@mui/material";
 import { useSelector } from "react-redux";
-import { demoChats } from "./utils/demoChats";
+import { demoChats } from "./utils/util functions/demoChats";
 const DemoChats = () => {
   const { palette } = useTheme();
   const user = useSelector((store) => store.user.userInfo);

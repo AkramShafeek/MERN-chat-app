@@ -3,7 +3,7 @@ import { BorderColor, SendRounded } from "@mui/icons-material";
 import { Avatar, Box, Button, Divider, IconButton, TextField, Typography } from "@mui/material";
 import DemoChats from "./DemoChats";
 import { selectChat } from "../redux/features/chatSlice";
-import { getChatName, getUserAvatar } from "./utils/getChatDetails";
+import { getChatName, getUserAvatar } from "./utils/util functions/getChatDetails";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import ChatOptionsModal from "./ChatOptionsModal";
