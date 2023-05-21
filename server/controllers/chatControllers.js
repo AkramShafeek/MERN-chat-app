@@ -91,11 +91,11 @@ const renameGroup = async (req, res) => {
 }
 
 const addToGroup = async (req, res) => {
-  const { chatId, userId } = req.body;
+  const { chatId, userIds } = req.body;
 
-  const added = await Chat.findByIdAndUpdate(chatId, { $push: { users: userId } }, { new: true })
-    .populate("users", "-password")
-    .populate("groupAdmin", "-password");
+  const added = await Chat.findByIdAndUpdate(chatId, { $push: { users: { $each: userIds } } }, { new: true })
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password");
 
   if (!added)
     throw new Error("Chat not found");
