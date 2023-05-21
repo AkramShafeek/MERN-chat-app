@@ -1,11 +1,12 @@
 import { useTheme } from "@emotion/react";
-import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Skeleton, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Collapse, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Skeleton, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import MySnackbar from "./utils/util components/MySnackbar";
 import { loadChat } from "../redux/features/chatSlice";
 import LinearProgress from '@mui/material/LinearProgress';
 import { useState } from "react";
+import { TransitionGroup } from 'react-transition-group';
 
 const userInfo = (user) => {
   return (
@@ -46,7 +47,7 @@ const UsersList = (props) => {
       setLoadingUser(user._id);
       // this function will give back the event of click
       // use it if needed
-      await await chumma();
+      await await props.onUserClick(user, event);
       setLoadingUser(null);
     } catch (error) {
       setLoadingUser(null);
@@ -56,27 +57,31 @@ const UsersList = (props) => {
   return (
     <Stack component="nav" aria-label="mailbox folders"
       sx={{
+        width: "100%",
         position: 'relative',
         overflowY: props.users.length > props.limit ? 'scroll' : 'visible',
         height: props.users.length > props.limit ? `${props.limit * 73}px` : `${props.users.length * 73}px`
       }}>
-      {props.users?.map((user) => {
-        return (
-          <div key={user._id}>
-            <ListItemButton sx={listButtonStyles} onClick={(event) => handleClick(user, event)}>
-              <ListItem disablePadding>
-                <ListItemAvatar>
-                  <Avatar alt="P" src={user.pic} />
-                </ListItemAvatar>
-                <ListItemText primary={userInfo(user)} />
-              </ListItem>
-            </ListItemButton>
-            {loadingUser === user._id && <LinearProgress sx={{ borderRadius: '10px' }} />}
-          </div>
-        )
-      })
-      }
-    </Stack>
+
+      <TransitionGroup>
+        {props.users?.map((user) => {
+          return (
+            <Collapse key={user._id}>
+              <ListItemButton sx={listButtonStyles} onClick={(event) => handleClick(user, event)}>
+                <ListItem disablePadding>
+                  <ListItemAvatar>
+                    <Avatar alt="P" src={user.pic} />
+                  </ListItemAvatar>
+                  <ListItemText primary={userInfo(user)} />
+                </ListItem>
+              </ListItemButton>
+              {loadingUser === user._id && <LinearProgress sx={{ borderRadius: '10px' }} />}
+            </Collapse>
+          )
+        })
+        }
+      </TransitionGroup>
+    </Stack >
   );
 }
 

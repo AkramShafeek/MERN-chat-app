@@ -1,10 +1,7 @@
-import { useTheme } from "@emotion/react"
 import { PersonAddAlt1Rounded } from "@mui/icons-material"
-import { Avatar, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Typography } from "@mui/material"
+import { Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemText, Typography } from "@mui/material"
 
-const AddUserToGroup = (props) => {
-
-  const { palette } = useTheme();
+const AddUserToGroupOption = (props) => {
 
   const listButtonStyles = {
     marginTop: "0.5rem",
@@ -13,7 +10,7 @@ const AddUserToGroup = (props) => {
   }
 
   const handleClick = () => {
-    
+    props.openAddUsers();
   }
 
   return (
@@ -35,4 +32,8 @@ const AddUserToGroup = (props) => {
   )
 }
 
-export default AddUserToGroup;
+AddUserToGroupOption.defaultProps = {
+  openAddUsers: () => {}
+}
+
+export default AddUserToGroupOption;

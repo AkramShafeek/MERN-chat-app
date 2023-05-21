@@ -70,8 +70,8 @@ const UsersSearchBar = ({ getSearchedUsers, getLoadingStatus, borderRadius }) =>
       setClearSearchIcon(false);
   }
   return (
-    <Box padding={"0.5rem 1rem"} width={"100%"}>
-      <TextField value={searchValue} fullWidth placeholder="search users eg: akram..."
+    <Box width={"100%"}>
+      <TextField size="small" placeholder="search users eg: akram..." fullWidth
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">
