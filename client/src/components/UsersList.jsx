@@ -1,9 +1,4 @@
-import { useTheme } from "@emotion/react";
-import { Avatar, Box, Collapse, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Skeleton, Stack, Typography } from "@mui/material";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
-import MySnackbar from "./utils/util components/MySnackbar";
-import { loadChat } from "../redux/features/chatSlice";
+import { Avatar, Collapse, ListItem, ListItemAvatar, ListItemButton, ListItemText, Stack, Typography } from "@mui/material";
 import LinearProgress from '@mui/material/LinearProgress';
 import { useState } from "react";
 import { TransitionGroup } from 'react-transition-group';
@@ -19,10 +14,6 @@ const userInfo = (user) => {
 
 const UsersList = (props) => {
 
-  const token = useSelector((store) => store.user.token);
-  const chat = useSelector((store) => store.chat.data);
-  const dispatch = useDispatch()
-
   const [loadingUser, setLoadingUser] = useState(null);
 
   if (!props.users)
@@ -32,14 +23,6 @@ const UsersList = (props) => {
     marginTop: "0.5rem",
     marginRight: "0.5rem",
     borderRadius: "10px"
-  }
-
-  const chumma = () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
-    });
   }
 
   const handleClick = async (user, event) => {

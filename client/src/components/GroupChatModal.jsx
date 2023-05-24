@@ -12,7 +12,8 @@ import { useState } from 'react';
 import { useTheme } from '@emotion/react';
 import { loadChat } from '../redux/features/chatSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, IconButton, InputAdornment, Skeleton, TextField } from '@mui/material';
+import { TransitionGroup } from 'react-transition-group';
+import { Button, Grow, IconButton, InputAdornment, Skeleton, TextField } from '@mui/material';
 
 const style = {
   position: 'absolute',
@@ -37,7 +38,7 @@ const GroupChatModal = ({ children }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [searchedUsers, setSearchedUsers] = useState([]);
   const [clearSearchIcon, setClearSearchIcon] = useState(false);
-  const [searchValue, setSearchValue] = useState();
+  const [searchValue, setSearchValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState(false);
   const dispatch = useDispatch();
@@ -82,7 +83,7 @@ const GroupChatModal = ({ children }) => {
       setSelectedUsers([...selectedUsers, user]);
   }
   const removeUser = async (userId) => {
-    const filteredUsers = selectedUsers.filter((user) => user._id != userId);
+    const filteredUsers = selectedUsers.filter((user) => user._id !== userId);
     setSelectedUsers(filteredUsers);
   }
 
@@ -147,22 +148,28 @@ const GroupChatModal = ({ children }) => {
                 </InputAdornment>
               )
             }} onChange={handleSearch} />
-          <Box display={"flex"} gap={"0.8rem"} flexWrap={"wrap"}>{selectedUsers.map((user) => {
-            return (
-              <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} key={user._id} gap={"10px"} borderRadius={"5px"} backgroundColor={palette.primary.light} padding={"10px 15px"}>
-                {user.name}
-                <IconButton onClick={() => removeUser(user._id)}
-                  sx={{
-                    padding: '0',
-                    '&:hover': {
-                      backgroundColor: 'transparent'
-                    }
-                  }}>
-                  <CloseRoundedIcon />
-                </IconButton>
-              </Box>
-            )
-          })}</Box>
+          <Box display={"flex"} gap={"0.8rem"} flexWrap={"wrap"}>
+            <TransitionGroup style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap" }}>
+              {selectedUsers.map((user) => {
+                return (
+                  <Grow key={user._id}>
+                    <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} gap={"10px"} borderRadius={"5px"} backgroundColor={palette.primary.light} padding={"10px 15px"}>
+                      {user.name}
+                      <IconButton onClick={() => removeUser(user._id)}
+                        sx={{
+                          padding: '0',
+                          '&:hover': {
+                            backgroundColor: 'transparent'
+                          }
+                        }}>
+                        <CloseRoundedIcon />
+                      </IconButton>
+                    </Box>
+                  </Grow>
+                )
+              })}
+            </TransitionGroup>
+          </Box>
           {loading ? (
             <div>
               <Skeleton animation="wave" height={50} />

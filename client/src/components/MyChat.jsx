@@ -10,6 +10,7 @@ import { getChatName, getUserAvatar } from "./utils/util functions/getChatDetail
 
 const MyChat = () => {
   const token = useSelector((store) => store.user.token);
+  const mode = useSelector((store) => store.ui.theme);
   const user = useSelector((store) => store.user.userInfo);
   const chat = useSelector((store) => store.chat.data);
   const selectedChat = useSelector((store) => store.chat.selectedChat);
@@ -128,9 +129,9 @@ const MyChat = () => {
                 }
               }}>
               <Avatar alt="P" src={getUserAvatar(data, user)} />
-              <Typography fontWeight={700}>
-                {getChatName(data, user)}
-              </Typography>
+                <Typography fontWeight={700}>
+                  {getChatName(data, user)}
+                </Typography>
             </Box>
           )
         })}

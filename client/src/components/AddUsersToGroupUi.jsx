@@ -6,6 +6,7 @@ import { useTheme } from "@emotion/react";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { addUsersToGroupApi } from "./utils/api callers/groupChatApiCallers";
 import { useDispatch, useSelector } from "react-redux";
+import { TransitionGroup } from 'react-transition-group';
 import { loadChat, selectChat } from "../redux/features/chatSlice";
 
 
@@ -70,33 +71,33 @@ const AddUsersToGroupUi = ({ getLoadingStatus, closeAddUsers }) => {
     <Box padding={"0rem 1rem"} display={"flex"} flexDirection={"column"} gap={"0.5rem"}>
       <UsersSearchBar
         getSearchedUsers={(data) => setSearchedUsers(data)}
-        getLoadingStatus={(status) => setLoading(status)} />
+        getLoadingStatus={(status) => setLoading(status)}
+        borderRadius={"20px"} />
       {<Collapse in={isUserAlreadyExists}>
         <Alert severity="error" sx={{ display: "flex", alignItems: "center" }} variant="outlined">User already exists in the group</Alert>
       </Collapse>}
-      <Box display={"flex"} gap={"0.8rem"} flexWrap={"wrap"}>{selectedUsers.map((user) => {
-        return (
-          <Box
-            display={"flex"}
-            justifyContent={"space-between"}
-            alignItems={"center"}
-            key={user._id}
-            gap={"10px"}
-            borderRadius={"5px"}
-            backgroundColor={palette.primary.light} padding={"10px 15px"}>
-            {user.name}
-            <IconButton onClick={() => removeUser(user._id)}
-              sx={{
-                padding: '0',
-                '&:hover': {
-                  backgroundColor: 'transparent'
-                }
-              }}>
-              <CloseRoundedIcon />
-            </IconButton>
-          </Box>
-        )
-      })}</Box>
+      <Box display={"flex"} gap={"0.8rem"} flexWrap={"wrap"}>
+        <TransitionGroup style={{ display: "flex", gap: "0.8rem", flexWrap: "wrap" }}>
+          {selectedUsers.map((user) => {
+            return (
+              <Grow key={user._id}>
+                <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} gap={"10px"} borderRadius={"5px"} backgroundColor={palette.primary.light} padding={"10px 15px"}>
+                  {user.name}
+                  <IconButton onClick={() => removeUser(user._id)}
+                    sx={{
+                      padding: '0',
+                      '&:hover': {
+                        backgroundColor: 'transparent'
+                      }
+                    }}>
+                    <CloseRoundedIcon />
+                  </IconButton>
+                </Box>
+              </Grow>
+            )
+          })}
+        </TransitionGroup>
+      </Box>
       {loading ? (
         <div>
           <Skeleton animation="wave" height={50} />
