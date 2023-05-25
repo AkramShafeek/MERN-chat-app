@@ -31,7 +31,7 @@ const sendMessage = async (req, res) => {
 }
 
 const getAllMessages = async (req, res) => {
-  const messages = await Message.find({ chat: req.params.chatId }).sort({ createdAt: -1 })
+  const messages = await Message.find({ chat: req.params.chatId }).sort({ createdAt: 1 })
     .populate("sender", "name pic")
     .populate("chat");
 

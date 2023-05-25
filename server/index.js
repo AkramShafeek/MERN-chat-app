@@ -68,6 +68,13 @@ const startServer = async () => {
                         return;
                     socket.in(user._id).emit('message received', newMessageReceived);
                 })
+            });
+            socket.on("typing", (roomId, userPic) => { console.log("Typing event"); socket.in(roomId).emit("typing", userPic) });
+            socket.on("stop typing", (roomId) => { socket.in(roomId).emit("stop typing") });
+
+            socket.off("setup", () => {
+                console.log("User disconnected");
+                socket.leave(userData._id);
             })
         });
     } catch (error) {
