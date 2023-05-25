@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
 import { BorderColor, CollectionsBookmarkTwoTone, SendRounded } from "@mui/icons-material";
-import { Avatar, Box, Button, Divider, IconButton, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, CircularProgress, Collapse, Divider, IconButton, TextField, Typography } from "@mui/material";
 import DemoChats from "./DemoChats";
 import { selectChat } from "../redux/features/chatSlice";
 import { getChatName, getUserAvatar } from "./utils/util functions/getChatDetails";
@@ -15,6 +15,7 @@ import axios from "axios";
 const ENDPOINT = "http://localhost:3001";
 var socket, selectedChatCompare;
 var chatMessagesSetter;
+var typingTimeout = null;
 
 const Chat = () => {
 
@@ -26,11 +27,16 @@ const Chat = () => {
   const [chatMessages, setChatMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
+  const [isUserTyping, setIsUserTyping] = useState(false);
+  const [isSomeoneTyping, setIsSomeoneTyping] = useState(false);
+  const [typingUser, setTypingUser] = useState(null);
 
   useEffect(() => {
     socket = io(ENDPOINT);
     socket.emit('setup', user);
-    socket.on('connection')
+    socket.on('connected', () => setSocketConnected(true));
+    socket.on('typing', (userPic) => { setIsSomeoneTyping(true); setTypingUser(userPic) });
+    socket.on('stop typing', () => { setIsSomeoneTyping(false); });
   }, []);
 
   useEffect(() => {
@@ -44,7 +50,7 @@ const Chat = () => {
         // send notification here
       }
       else {
-        setChatMessages([newMessageReceived, ...chatMessages]);
+        setChatMessages([...chatMessages, newMessageReceived]);
       }
 
     })
@@ -83,16 +89,39 @@ const Chat = () => {
 
   const handleChange = (event) => {
     setEnteredMessage(event.target.value);
+    if (!socketConnected)
+      return;
+    if (!isUserTyping) {
+      setIsUserTyping(true);
+      socket.emit("typing", selectedChat._id, user.pic);
+    }
+
+    if (typingTimeout)
+      clearTimeout(typingTimeout);
+
+    typingTimeout = setTimeout(() => {
+      setIsUserTyping(false);
+      setTypingUser(null);
+      socket.emit("stop typing", selectedChat._id);
+    }, 3000);
+
   }
 
   const sendMessage = async () => {
     try {
       setEnteredMessage("");
       const data = await sendMessageApi(selectedChat, enteredMessage, token);
+
+      setIsUserTyping(false);
+      setIsSomeoneTyping(false);
+      setTypingUser(null);
+
+      socket.emit("stop typing", selectedChat._id);
       socket.emit('new message', data);
-      setChatMessages([data, ...chatMessages]);
+
+      setChatMessages([...chatMessages, data]);
     } catch (error) {
-      console.log("Kuch error hogaya bhai");
+      console.log("Some error");
     }
   }
 
@@ -135,6 +164,7 @@ const Chat = () => {
         padding={"1rem"}
         sx={{ overflowY: "scroll" }}
       >
+        {<div><Collapse in={!isUserTyping && isSomeoneTyping} ><div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}><Avatar src={typingUser} />Typing....</div></Collapse></div>}
         <ChatMessages socket={socket} chatMessages={chatMessages} isLoading={loading} />
       </Box>
       <Box height={'15%'} width='100%'

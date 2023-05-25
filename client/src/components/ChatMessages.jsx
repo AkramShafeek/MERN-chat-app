@@ -1,6 +1,7 @@
 import { useTheme } from "@emotion/react"
-import { Avatar, Box, CircularProgress, LinearProgress } from "@mui/material";
+import { Avatar, Box, CircularProgress, Collapse, Fade, Grow, LinearProgress } from "@mui/material";
 import { useSelector } from "react-redux";
+import { TransitionGroup } from 'react-transition-group';
 import { demoChats } from "./utils/util functions/demoChats";
 import { useEffect, useState } from "react";
 import axios from 'axios';
@@ -39,39 +40,43 @@ const ChatMessages = ({ socket, chatMessages, isLoading }) => {
   const isShowAvatar = (message, index) => {
     if (message.sender._id === user._id)
       return false;
-    else if (chatMessages[index - 1] === undefined || chatMessages[index - 1].sender._id !== message.sender._id)
+    else if (chatMessages[index + 1] === undefined || chatMessages[index + 1].sender._id !== message.sender._id)
       return true;
     else
       return false;
   }
 
   return (
-    <Box display={"flex"} flexDirection={"column-reverse"} gap={"0.5rem"}>
-      {isLoading && <CircularProgress sx={{ borderRadius: '10px', margin: 'auto' }} />}
-      {chatMessages.map((message, index) => {
-        return (
-          <Box key={index} sx={{ display: 'flex', justifyContent: message.sender._id === user._id ? 'flex-end' : 'flex-start' }}>
-            <Box
-              display={'flex'}
-              alignItems={'flex-end'}
-              gap={"10px"}
-              width='fit-content'
-              maxWidth={"45%"}>
-              {isShowAvatar(message, index) && <Avatar src={message.sender.pic} />}
-              <Box sx={{
-                marginLeft: !isShowAvatar(message, index) && "51px",
-                padding: '0.8rem 1rem',
-                borderRadius: '23px',
-                backgroundColor: message.sender._id === user._id ? palette.primary.main : palette.neutral.light,
-                width: 'fit-content',
-                color: message.sender._id === user._id ? "white" : "",
-              }}>
-                {message.content}
+    <Box display={"flex"}>
+      {isLoading && <LinearProgress sx={{ width: '100%', borderRadius: '10px', margin: 'auto' }} />}
+      <TransitionGroup style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        {chatMessages.map((message, index) => {
+          return (
+            <Collapse key={index}>
+              <Box sx={{ display: 'flex', justifyContent: message.sender._id === user._id ? 'flex-end' : 'flex-start' }}>
+                <Box
+                  display={'flex'}
+                  alignItems={'flex-end'}
+                  gap={"10px"}
+                  width='fit-content'
+                  maxWidth={"45%"}>
+                  {isShowAvatar(message, index) && <Avatar src={message.sender.pic} />}
+                  <Box sx={{
+                    marginLeft: !isShowAvatar(message, index) && "51px",
+                    padding: '0.8rem 1rem',
+                    borderRadius: '23px',
+                    backgroundColor: message.sender._id === user._id ? palette.primary.main : palette.neutral.light,
+                    width: 'fit-content',
+                    color: message.sender._id === user._id ? "white" : "",
+                  }}>
+                    {message.content}
+                  </Box>
+                </Box>
               </Box>
-            </Box>
-          </Box>
-        )
-      })}
+            </Collapse>
+          )
+        })}
+      </TransitionGroup>
     </Box>
   );
 }
