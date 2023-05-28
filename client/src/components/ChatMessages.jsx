@@ -47,13 +47,13 @@ const ChatMessages = ({ socket, chatMessages, isLoading }) => {
   }
 
   return (
-    <Box display={"flex"}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
       {isLoading && <LinearProgress sx={{ width: '100%', borderRadius: '10px', margin: 'auto' }} />}
       <TransitionGroup style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
         {chatMessages.map((message, index) => {
           return (
             <Collapse key={index}>
-              <Box sx={{ display: 'flex', justifyContent: message.sender._id === user._id ? 'flex-end' : 'flex-start' }}>
+              <Box key={index} sx={{ display: 'flex', justifyContent: message.sender._id === user._id ? 'flex-end' : 'flex-start' }}>
                 <Box
                   display={'flex'}
                   alignItems={'flex-end'}

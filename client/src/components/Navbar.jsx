@@ -1,21 +1,24 @@
-import { Avatar, Box, IconButton, InputAdornment, Menu, MenuItem, Paper, TextField, Tooltip, Typography } from "@mui/material";
+import { Avatar, Badge, Box, IconButton, InputAdornment, Menu, MenuItem, Paper, TextField, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SideDrawer from "./SideDrawer";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleMode } from "../redux/features/uiModeSlice";
 import LightModeIcon from '@mui/icons-material/LightMode';
+import MailIcon from '@mui/icons-material/Mail';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
 import { useTheme } from "@emotion/react";
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import searchUsers from "./utils/util functions/searchUsers";
 import NavbarSearchUser from "./NavbarSearchUser";
+import Notifications from "./Notifications";
 
 const Navbar = () => {
   const pic = useSelector((store) => store.user.userInfo.pic);
   const uiMode = useSelector((store) => store.ui.theme);
   const token = useSelector((store) => store.user.token);
+  const notificationsNum = useSelector((store) => store.notifications.messageNotifications.length);
   const dispatch = useDispatch();
 
   const [anchorElNotifications, setAnchorElNotifications] = useState(null);
@@ -101,7 +104,9 @@ const Navbar = () => {
         {/* NOTIFICATIONS */}
         <Tooltip title="Message notifications">
           <IconButton onClick={handleClick.notifications}>
-            <NotificationsIcon />
+            <Badge badgeContent={notificationsNum} color="primary">
+              <MailIcon color="action" />
+            </Badge>
           </IconButton>
         </Tooltip>
         <Menu
@@ -114,7 +119,11 @@ const Navbar = () => {
           PaperProps={{
             elevation: 3
           }}>
-          <MenuItem>Your new messages will appear here</MenuItem>
+          <MenuItem sx={{
+            '&:hover': {
+              backgroundColor: 'transparent'
+            }
+          }} disableRipple disableTouchRipple><Notifications /></MenuItem>
         </Menu>
 
         {/* PROFILE OPTIONS */}

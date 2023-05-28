@@ -59,6 +59,10 @@ const startServer = async () => {
                 socket.join(roomId);
                 console.log("User joined roomId: " + roomId);
             });
+            socket.on("leave chat", (roomId) => {
+                socket.leave(roomId);
+                console.log("User left room: " + roomId);
+            })
             socket.on("new message", (newMessageReceived) => {
                 var chat = newMessageReceived.chat;
                 if (!chat.users) return console.log("Chat.users not defined");

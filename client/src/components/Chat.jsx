@@ -4,13 +4,14 @@ import { Avatar, Box, Button, CircularProgress, Collapse, Divider, IconButton, T
 import DemoChats from "./DemoChats";
 import { selectChat } from "../redux/features/chatSlice";
 import { getChatName, getUserAvatar } from "./utils/util functions/getChatDetails";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import ChatOptionsModal from "./ChatOptionsModal";
 import ChatMessages from "./ChatMessages";
 import { sendMessageApi } from "./utils/api callers/messageApiCallers";
 import io from 'socket.io-client';
 import axios from "axios";
+import { loadNotifications } from "../redux/features/notificationSlice";
 
 const ENDPOINT = "http://localhost:3001";
 var socket, selectedChatCompare;
@@ -23,6 +24,10 @@ const Chat = () => {
   const user = useSelector((store) => store.user.userInfo);
   const token = useSelector((store) => store.user.token);
   const selectedChat = useSelector((store) => store.chat.selectedChat);
+  const messageNotifications = useSelector((store) => store.notifications.messageNotifications);
+  const dispatch = useDispatch();
+
+  const [prevSelectedChat, setPrevSelectedChat] = useState(null);
   const [enteredMessage, setEnteredMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -37,24 +42,49 @@ const Chat = () => {
     socket.on('connected', () => setSocketConnected(true));
     socket.on('typing', (userPic) => { setIsSomeoneTyping(true); setTypingUser(userPic) });
     socket.on('stop typing', () => { setIsSomeoneTyping(false); });
+
+    return () => {
+      socket.disconnect();
+    }
   }, []);
 
   useEffect(() => {
-    setChatMessages([]);
-    fetchChat();
+
+    if (selectedChat) {
+      fetchChat()
+        .then(() => socket.emit('join chat', selectedChat._id))
+        .catch((error) => console.log(error));
+    }
+
+    // clean up logic
+    return () => {
+      setChatMessages([]);
+      setIsUserTyping(false);
+      setIsSomeoneTyping(false);
+      setTypingUser(null);
+
+      if (prevSelectedChat)
+        socket.emit("leave chat", prevSelectedChat._id);
+
+      setPrevSelectedChat(selectedChat);
+    }
   }, [selectedChat]);
 
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
       if (!selectedChat || selectedChat._id != newMessageReceived.chat._id) {
-        // send notification here
+        // send notification here        
+        dispatch(loadNotifications([...messageNotifications, newMessageReceived]));
       }
       else {
         setChatMessages([...chatMessages, newMessageReceived]);
       }
 
     })
-  })
+    return () => {
+      socket.off("message received");
+    }
+  });
 
   const fetchChat = async () => {
     try {
@@ -68,10 +98,10 @@ const Chat = () => {
       const response = await axios.get(url, config);
       setChatMessages(response.data);
       setLoading(false);
-      socket.emit('join chat', selectedChat._id);
     } catch (error) {
       console.log(error);
       setLoading(false);
+      throw error;
     }
   }
 
