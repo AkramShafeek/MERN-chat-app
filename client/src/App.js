@@ -9,8 +9,9 @@ import { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 function App() {
-  const uiMode = useSelector((store) => store.ui.theme);
-  const theme = useMemo(() => createTheme(themeSettings(uiMode)), [uiMode]);
+  const uiMode = useSelector((store) => store.ui.mode);
+  const themeType = useSelector((store) => store.ui.theme);
+  const theme = useMemo(() => createTheme(themeSettings[themeType](uiMode)), [uiMode, themeType]);
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>

@@ -1,42 +1,87 @@
-import { Avatar, Box, ListItem, ListItemAvatar, ListItemButton, ListItemText, Stack, Typography } from "@mui/material";
-import { useEffect } from "react";
-import { useSelector } from "react-redux"
+import {
+  Avatar,
+  Badge,
+  Box,
+  IconButton,
+  ListItem,
+  ListItemAvatar,
+  ListItemButton,
+  Menu,
+  MenuItem,
+  Stack,
+  Tooltip,
+  Typography
+} from "@mui/material";
+import MailIcon from '@mui/icons-material/Mail';
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux"
+import { clearChat, selectChat } from "../redux/features/chatSlice";
+import { removeNotification } from "../redux/features/notificationSlice";
 
 const listButtonStyles = {
-  marginTop: "0.5rem",
-  marginRight: "0.5rem",
+  margin: "0.5rem",
   borderRadius: "10px"
 }
 
 const Notifications = () => {
+  const dispatch = useDispatch();
   const messageNotifications = useSelector((store) => store.notifications.messageNotifications);
+  const [anchorElNotifications, setAnchorElNotifications] = useState(null);
+  const isNotificationsOpen = Boolean(anchorElNotifications);
 
-  useEffect(() => {
-    console.log(messageNotifications);
-  }, [messageNotifications]);
+  const handleClick = {
+    openNotifications: (event) => {
+      if (messageNotifications.length <= 0)
+        return;
+      setAnchorElNotifications(event.currentTarget);
+    },
+    goToChat: (message) => {
+      handleClose.closeNotifications();
+      dispatch(selectChat(message.chat));
+      dispatch(removeNotification(message.chat._id));
+    }
+  }
 
-  const handleClick = () => {
-
+  const handleClose = {
+    closeNotifications: () => { setAnchorElNotifications(null); }
   }
 
   return (
-    <Stack>
-      {messageNotifications.map((message) => {
-        return (
-          <ListItemButton sx={listButtonStyles} onClick={() => handleClick()}>
-            <ListItem disablePadding>
+    <>
+      <Tooltip title="Message notifications">
+        <IconButton onClick={handleClick.openNotifications}>
+          <Badge badgeContent={messageNotifications.length} color="primary">
+            <MailIcon color="action" />
+          </Badge>
+        </IconButton>
+      </Tooltip>
+      <Menu
+        anchorEl={anchorElNotifications}
+        open={isNotificationsOpen}
+        onClose={handleClose.closeNotifications}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+        PaperProps={{
+          elevation: 3
+        }}>
+        {messageNotifications.map((message) => {
+          return (
+            <MenuItem key={message._id} sx={listButtonStyles} onClick={() => handleClick.goToChat(message)}>
               <ListItemAvatar>
                 <Avatar alt="P" src={message.sender.pic} />
               </ListItemAvatar>
               <Box>
-                <Typography fontWeight={700}>{message.sender.name}</Typography>
+                <Typography fontWeight={700}>{
+                  message.chat.isGroupChat ? message.chat.chatName : message.sender.name
+                }</Typography>
                 <Typography fontSize={12}>{message.content}</Typography>
               </Box>
-            </ListItem>
-          </ListItemButton>
-        )
-      })}
-    </Stack>
+            </MenuItem>
+          )
+        })}
+      </Menu>
+    </>
   )
 }
 

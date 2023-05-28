@@ -6,6 +6,7 @@ import { Avatar, Box, Button, Divider, Paper, Skeleton, Stack, Typography } from
 import { useTheme } from "@emotion/react";
 import GroupChatModal from "./GroupChatModal";
 import { getChatName, getUserAvatar } from "./utils/util functions/getChatDetails";
+import GroupsIcon from '@mui/icons-material/Groups';
 
 
 const MyChat = () => {
@@ -85,10 +86,14 @@ const MyChat = () => {
         <Typography fontWeight={700} fontSize={"15px"} fontFamily={"Lato"} color={"white"}>My Chat</Typography>
         <GroupChatModal>
           <Button sx={{
-            backgroundColor: "white", '&:hover': {
+            backgroundColor: "white", 
+            display: 'flex',
+            gap: '1rem',
+            '&:hover': {
               backgroundColor: "white"
             }
-          }}>Create Group +</Button>
+          }}>Create Group
+            <GroupsIcon /></Button>
         </GroupChatModal>
       </Box>
 
@@ -129,9 +134,9 @@ const MyChat = () => {
                 }
               }}>
               <Avatar alt="P" src={getUserAvatar(data, user)} />
-                <Typography fontWeight={700}>
-                  {getChatName(data, user)}
-                </Typography>
+              <Typography fontWeight={700}>
+                {getChatName(data, user)}
+              </Typography>
             </Box>
           )
         })}

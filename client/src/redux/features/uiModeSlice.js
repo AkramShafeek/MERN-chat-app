@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  theme: 'light'
+  mode: 'light',
+  theme: 'purple'
 }
 
 const uiModeSlice = createSlice({
@@ -9,10 +10,13 @@ const uiModeSlice = createSlice({
   initialState,
   reducers: {
     toggleMode: (state) => {
-        state.theme === 'light' ? state.theme = 'dark' : state.theme = 'light';
+      state.mode === 'light' ? state.mode = 'dark' : state.mode = 'light';
+    },
+    selectTheme: (state, action) => {
+      state.theme = action.payload;
     }
   }
 });
 
-export const { toggleMode } = uiModeSlice.actions;
+export const { toggleMode, selectTheme } = uiModeSlice.actions;
 export default uiModeSlice.reducer;

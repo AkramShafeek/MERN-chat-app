@@ -12,6 +12,7 @@ import { sendMessageApi } from "./utils/api callers/messageApiCallers";
 import io from 'socket.io-client';
 import axios from "axios";
 import { loadNotifications } from "../redux/features/notificationSlice";
+import mernLogo from "../images/mern.png";
 
 const ENDPOINT = "http://localhost:3001";
 var socket, selectedChatCompare;
@@ -27,7 +28,6 @@ const Chat = () => {
   const messageNotifications = useSelector((store) => store.notifications.messageNotifications);
   const dispatch = useDispatch();
 
-  const [prevSelectedChat, setPrevSelectedChat] = useState(null);
   const [enteredMessage, setEnteredMessage] = useState("");
   const [chatMessages, setChatMessages] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,10 +40,16 @@ const Chat = () => {
     socket = io(ENDPOINT);
     socket.emit('setup', user);
     socket.on('connected', () => setSocketConnected(true));
-    socket.on('typing', (userPic) => { setIsSomeoneTyping(true); setTypingUser(userPic) });
+    socket.on('typing', (roomId, userPic) => {
+      console.log(roomId);
+      setIsSomeoneTyping(true);
+      setTypingUser(userPic)
+    });
     socket.on('stop typing', () => { setIsSomeoneTyping(false); });
 
     return () => {
+      socket.off('typing');
+      socket.off('stop typing');
       socket.disconnect();
     }
   }, []);
@@ -61,12 +67,12 @@ const Chat = () => {
       setChatMessages([]);
       setIsUserTyping(false);
       setIsSomeoneTyping(false);
-      setTypingUser(null);
+      clearTimeout(typingTimeout);
 
-      if (prevSelectedChat)
-        socket.emit("leave chat", prevSelectedChat._id);
-
-      setPrevSelectedChat(selectedChat);
+      // leaving the previous chat room
+      if (selectedChat) {
+        socket.emit("leave chat", selectedChat._id);
+      }
     }
   }, [selectedChat]);
 
@@ -157,10 +163,31 @@ const Chat = () => {
 
   if (!selectedChat) {
     return (
-      <Box sx={containerStyles}>
+      <Box sx={{ ...containerStyles }}>
         {/* here insert the component that displays a message
         when no chat is selected */}
-        <div>Select a chat to continue</div>
+        <Box sx={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '3rem',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <Box width="50%">
+            <img src={mernLogo} alt="" srcset="" width="100%" style={{opacity:'50%'}}/>
+          </Box>          
+          <Typography
+            fontSize={25}
+            fontFamily={'lato'}
+            color={palette.neutral.medium}
+            fontWeight={300}
+            letterSpacing={8}
+            textAlign={"center"}>
+            Select a chat to continue
+          </Typography>
+        </Box>
       </Box>
     )
   }

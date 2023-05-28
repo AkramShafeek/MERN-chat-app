@@ -10,7 +10,8 @@ const chatSlice = createSlice({
   initialState,
   reducers: {
     clearChat: (state) => {
-      state.chat = []
+      state.data = [];
+      state.selectedChat = null;
     },
     loadChat: (state, action) => {
       const data = action.payload;

@@ -15,8 +15,9 @@ const notificationsSlice = createSlice({
             state.messageNotifications = action.payload;
         },
         removeNotification: (state, action) => {
-            // action.payload contains the id of the message to be removed
-            // from the notifications
+            // action.payload contains the id of the chat to be removed from the notifications
+            const filteredNotifications = state.messageNotifications.filter(message => message.chat._id != action.payload);
+            state.messageNotifications = filteredNotifications;
         }
     }
 });

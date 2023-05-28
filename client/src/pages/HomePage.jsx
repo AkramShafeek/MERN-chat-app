@@ -8,6 +8,7 @@ import Signup from '../components/Signup';
 import { useMediaQuery } from '@mui/material';
 import bgImg from '../1185202.png';
 import { useTheme } from '@emotion/react';
+import Login2 from '../components/Login2';
 
 
 const initialValuesRegister = {
@@ -87,10 +88,13 @@ const HomePage = () => {
               <Tabs onChange={handleChange} value={value} centered variant="fullWidth">
                 <Tab label="Login" value={1} />
                 <Tab label="Sign Up" value={2} />
+                <Tab label="Guest" value={3} />
               </Tabs>
             </Box>
             <Box padding={"2rem 0rem"}>
-              {value == 1 ? <Login /> : <Signup />}
+              {value == 1 && <Login />}
+              {value === 2 && <Signup />}
+              {value === 3 && <Login2 />}
             </Box>
           </Box>
         </Box>
