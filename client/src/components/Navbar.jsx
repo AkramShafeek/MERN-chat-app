@@ -136,7 +136,8 @@ const Navbar = () => {
           }}>
           <MenuItem onClick={()=>dispatch(selectTheme('purple'))}>Purple theme</MenuItem>
           <MenuItem onClick={()=>dispatch(selectTheme('gold'))}>Gold theme</MenuItem>
-          <MenuItem onClick={()=>dispatch(selectTheme('pastelRed'))}>pastel red theme</MenuItem>
+          <MenuItem onClick={()=>dispatch(selectTheme('pastelRed'))}>Pastel red theme</MenuItem>
+          <MenuItem onClick={()=>dispatch(selectTheme('skyBlue'))}>Sky blue theme</MenuItem>
         </Menu>
 
         {/* UI MODE TOGGLER */}

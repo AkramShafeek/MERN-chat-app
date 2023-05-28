@@ -89,6 +89,36 @@ export const pastelRedPalette = {
   },
 };
 
+export const skyBluePalette = {
+  grey: {
+    0: "#FFFFFF",
+    10: "#F6F6F6",
+    50: "#F0F0F0",
+    100: "#E0E0E0",
+    200: "#C2C2C2",
+    300: "#A3A3A3",
+    400: "#858585",
+    500: "#666666",
+    600: "#4D4D4D",
+    700: "#333333",
+    800: "#1A1A1A",
+    900: "#0A0A0A",
+    1000: "#000000",
+  },
+  primary: {
+    50: "#e0f5ff",
+    100: "#afe6ff",
+    200: "#77d5ff",
+    300: "#7fd4f5",
+    400: "#4bc3f2",
+    500: "#00abff",
+    600: "#009def",
+    700: "#009def",
+    800: "#0078c7",
+    900: "#054863",
+  },
+};
+
 // mui theme settings
 const goldTheme = (mode) => {
   return {
@@ -165,6 +195,81 @@ const goldTheme = (mode) => {
   };
 };
 
+const skyBlueTheme = (mode) => {
+  return {
+    palette: {
+      mode: mode,
+      ...(mode === "dark"
+        ? {
+          // palette values for dark mode
+          primary: {
+            dark: skyBluePalette.primary[900],
+            main: skyBluePalette.primary[400],
+            light: skyBluePalette.primary[900],
+          },
+          neutral: {
+            dark: skyBluePalette.grey[100],
+            main: skyBluePalette.grey[200],
+            mediumMain: skyBluePalette.grey[300],
+            medium: skyBluePalette.grey[400],
+            light: skyBluePalette.grey[700],
+          },
+          background: {
+            default: skyBluePalette.grey[900],
+            alt: skyBluePalette.grey[800],
+          },
+        }
+        : {
+          // palette values for light mode
+          primary: {
+            dark: skyBluePalette.primary[700],
+            main: skyBluePalette.primary[300],
+            light: skyBluePalette.primary[50],
+          },
+          neutral: {
+            dark: skyBluePalette.grey[700],
+            main: skyBluePalette.grey[500],
+            mediumMain: skyBluePalette.grey[400],
+            medium: skyBluePalette.grey[300],
+            light: skyBluePalette.grey[50],
+          },
+          background: {
+            default: skyBluePalette.grey[10],
+            alt: skyBluePalette.grey[0],
+          },
+        }),
+      },
+    typography: {
+      fontFamily: ["Rubik", "sans-serif"].join(","),
+      fontSize: 12,
+      h1: {
+        fontFamily: ["Rubik", "sans-serif"].join(","),
+        fontSize: 40,
+      },
+      h2: {
+        fontFamily: ["Rubik", "sans-serif"].join(","),
+        fontSize: 32,
+      },
+      h3: {
+        fontFamily: ["Rubik", "sans-serif"].join(","),
+        fontSize: 24,
+      },
+      h4: {
+        fontFamily: ["Rubik", "sans-serif"].join(","),
+        fontSize: 20,
+      },
+      h5: {
+        fontFamily: ["Rubik", "sans-serif"].join(","),
+        fontSize: 16,
+      },
+      h6: {
+        fontFamily: ["Rubik", "sans-serif"].join(","),
+        fontSize: 14,
+      },
+    },
+  };
+};
+
 const pastelRedTheme = (mode) => {
   return {
     palette: {
@@ -174,7 +279,7 @@ const pastelRedTheme = (mode) => {
           // palette values for dark mode
           primary: {
             dark: pastelRedPalette.primary[900],
-            main: pastelRedPalette.primary[400],
+            main: pastelRedPalette.primary[300],
             light: pastelRedPalette.primary[900],
           },
           neutral: {
@@ -319,5 +424,6 @@ const purpleTheme = (mode) => {
 export const themeSettings = {
   gold: goldTheme,
   purple: purpleTheme,
-  pastelRed: pastelRedTheme
+  pastelRed: pastelRedTheme,
+  skyBlue: skyBlueTheme
 }

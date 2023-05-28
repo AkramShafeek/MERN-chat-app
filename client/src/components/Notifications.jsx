@@ -2,6 +2,7 @@ import {
   Avatar,
   Badge,
   Box,
+  Button,
   IconButton,
   ListItem,
   ListItemAvatar,
@@ -16,7 +17,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { clearChat, selectChat } from "../redux/features/chatSlice";
-import { removeNotification } from "../redux/features/notificationSlice";
+import { clearNotifications, removeNotification } from "../redux/features/notificationSlice";
 
 const listButtonStyles = {
   margin: "0.5rem",
@@ -31,14 +32,16 @@ const Notifications = () => {
 
   const handleClick = {
     openNotifications: (event) => {
-      if (messageNotifications.length <= 0)
-        return;
       setAnchorElNotifications(event.currentTarget);
     },
     goToChat: (message) => {
       handleClose.closeNotifications();
       dispatch(selectChat(message.chat));
       dispatch(removeNotification(message.chat._id));
+    },
+    clearAllNotifications: () => {
+      dispatch(clearNotifications());
+      handleClose.closeNotifications();
     }
   }
 
@@ -65,6 +68,8 @@ const Notifications = () => {
         PaperProps={{
           elevation: 3
         }}>
+        {messageNotifications.length === 0 &&
+          <MenuItem disabled>No messages....</MenuItem>}
         {messageNotifications.map((message) => {
           return (
             <MenuItem key={message._id} sx={listButtonStyles} onClick={() => handleClick.goToChat(message)}>
@@ -80,6 +85,16 @@ const Notifications = () => {
             </MenuItem>
           )
         })}
+        <MenuItem disabled={messageNotifications.length === 0} sx={{
+          display: 'flex', justifyContent: 'center', '&:hover': {
+            backgroundColor: 'transparent'
+          }
+        }} disableRipple disableTouchRipple>
+          <Button disabled={messageNotifications.length === 0}
+            onClick={handleClick.clearAllNotifications}>
+            clear all
+          </Button>
+        </MenuItem>
       </Menu>
     </>
   )
