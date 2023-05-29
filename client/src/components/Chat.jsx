@@ -1,6 +1,6 @@
 import { useTheme } from "@emotion/react";
 import { BorderColor, CollectionsBookmarkTwoTone, SendRounded } from "@mui/icons-material";
-import { Avatar, Box, Button, CircularProgress, Collapse, Divider, IconButton, TextField, Typography } from "@mui/material";
+import { Avatar, Box, Button, CircularProgress, Collapse, Divider, IconButton, TextField, Typography, useMediaQuery } from "@mui/material";
 import DemoChats from "./DemoChats";
 import { selectChat } from "../redux/features/chatSlice";
 import { getChatName, getUserAvatar } from "./utils/util functions/getChatDetails";
@@ -13,15 +13,17 @@ import io from 'socket.io-client';
 import axios from "axios";
 import { loadNotifications } from "../redux/features/notificationSlice";
 import mernLogo from "../images/mern.png";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const ENDPOINT = "http://localhost:3001";
 var socket, selectedChatCompare;
 var chatMessagesSetter;
 var typingTimeout = null;
 
-const Chat = () => {
+const Chat = ({navigateToChatList}) => {
 
   const { palette } = useTheme();
+  const isNonMobile = useMediaQuery('(min-width:700px)');
   const user = useSelector((store) => store.user.userInfo);
   const token = useSelector((store) => store.user.token);
   const selectedChat = useSelector((store) => store.chat.selectedChat);
@@ -80,7 +82,7 @@ const Chat = () => {
     socket.on("message received", (newMessageReceived) => {
       if (!selectedChat || selectedChat._id != newMessageReceived.chat._id) {
         // send notification here        
-        dispatch(loadNotifications([...messageNotifications, newMessageReceived]));
+        dispatch(loadNotifications([newMessageReceived, ...messageNotifications]));
       }
       else {
         setChatMessages([...chatMessages, newMessageReceived]);
@@ -118,8 +120,8 @@ const Chat = () => {
     backgroundColor: palette.background.alt,
     justifyContent: "space-between",
     height: "100%",
-    width: "68%",
-    minWidth: "620px",
+    width: isNonMobile ? "68%" : "100%",
+    minWidth: isNonMobile ? "620px" : "400px",
     borderRadius: "10px",
   }
 
@@ -176,8 +178,8 @@ const Chat = () => {
           alignItems: 'center'
         }}>
           <Box width="50%">
-            <img src={mernLogo} alt="" srcset="" width="100%" style={{opacity:'50%'}}/>
-          </Box>          
+            <img src={mernLogo} alt="" srcset="" width="100%" style={{ opacity: '50%' }} />
+          </Box>
           <Typography
             fontSize={25}
             fontFamily={'lato'}
@@ -204,6 +206,9 @@ const Chat = () => {
           borderColor: palette.neutral.light
         }}>
         <Box display={"flex"} gap="1rem" alignItems="center">
+          <IconButton onClick={()=>navigateToChatList()}>
+            <ArrowBackIcon />
+          </IconButton>
           <Avatar src={getUserAvatar(selectedChat, user)}></Avatar>
           <Typography variant="h3">{getChatName(selectedChat, user)}</Typography>
         </Box>

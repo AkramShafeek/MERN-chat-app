@@ -49,35 +49,36 @@ const startServer = async () => {
             },
         });
         io.on("connection", (socket) => {
-            console.log("Connected to socket.io");
+            // console.log("Connected to socket.io");
             socket.on('setup', (userData) => {
                 socket.join(userData._id);
-                console.log(userData._id);
+                // console.log(userData._id);
                 socket.emit("connected");
             });
             socket.on("join chat", (roomId) => {
                 socket.join(roomId);
-                console.log("User joined roomId: " + roomId);
+                // console.log("User joined roomId: " + roomId);
             });
             socket.on("leave chat", (roomId) => {
                 socket.leave(roomId);
-                console.log("User left room: " + roomId);
+                // console.log("User left roomId: " + roomId);
             })
             socket.on("new message", (newMessageReceived) => {
                 var chat = newMessageReceived.chat;
                 if (!chat.users) return console.log("Chat.users not defined");
 
+                console.log('message recieved')
                 chat.users.forEach(user => {
                     if (user._id === newMessageReceived.sender._id)
                         return;
                     socket.in(user._id).emit('message received', newMessageReceived);
                 })
             });
-            socket.on("typing", (roomId, userPic) => { console.log("Typing event"); socket.in(roomId).emit("typing", userPic) });
+            socket.on("typing", (roomId, userPic) => { socket.in(roomId).emit("typing", roomId, userPic) });
             socket.on("stop typing", (roomId) => { socket.in(roomId).emit("stop typing") });
 
-            socket.off("setup", () => {
-                console.log("User disconnected");
+            socket.off("setup", (userData) => {
+                // console.log("User disconnected");
                 socket.leave(userData._id);
             })
         });

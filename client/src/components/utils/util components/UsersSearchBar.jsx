@@ -71,7 +71,7 @@ const UsersSearchBar = ({ getSearchedUsers, getLoadingStatus, borderRadius }) =>
   }
   return (
     <Box width={"100%"}>
-      <TextField size="small" placeholder="search users eg: akram..." fullWidth
+      <TextField value={searchValue} size="small" placeholder="search users eg: akram..." fullWidth
         InputProps={{
           endAdornment: (
             <InputAdornment position="end">

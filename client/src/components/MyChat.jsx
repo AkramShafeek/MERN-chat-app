@@ -2,14 +2,14 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux"
 import { loadChat, selectChat } from "../redux/features/chatSlice";
 import { useEffect, useState } from "react";
-import { Avatar, Box, Button, Divider, Paper, Skeleton, Stack, Typography } from "@mui/material";
+import { Avatar, Box, Button, Divider, Paper, Skeleton, Stack, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import GroupChatModal from "./GroupChatModal";
 import { getChatName, getUserAvatar } from "./utils/util functions/getChatDetails";
 import GroupsIcon from '@mui/icons-material/Groups';
 
 
-const MyChat = () => {
+const MyChat = ({ navigateToChat }) => {
   const token = useSelector((store) => store.user.token);
   const mode = useSelector((store) => store.ui.theme);
   const user = useSelector((store) => store.user.userInfo);
@@ -20,6 +20,7 @@ const MyChat = () => {
   const [loading, setLoading] = useState(false);
 
   const { palette } = useTheme();
+  const isNonMobile = useMediaQuery('(min-width:700px)');
 
   const fetchChats = async () => {
     try {
@@ -41,6 +42,8 @@ const MyChat = () => {
 
   const handleClick = (chat) => {
     dispatch(selectChat(chat));
+    if (!isNonMobile)
+      navigateToChat();
   }
 
   useEffect(() => {
@@ -65,7 +68,7 @@ const MyChat = () => {
     backgroundColor: palette.background.alt,
     padding: "1rem",
     height: "100%",
-    width: "31%",
+    width: isNonMobile ? "31%" : "100%",
     minWidth: "280px",
     borderRadius: "10px",
   }
@@ -86,7 +89,7 @@ const MyChat = () => {
         <Typography fontWeight={700} fontSize={"15px"} fontFamily={"Lato"} color={"white"}>My Chat</Typography>
         <GroupChatModal>
           <Button sx={{
-            backgroundColor: "white", 
+            backgroundColor: "white",
             display: 'flex',
             gap: '1rem',
             '&:hover': {
@@ -134,9 +137,11 @@ const MyChat = () => {
                 }
               }}>
               <Avatar alt="P" src={getUserAvatar(data, user)} />
-              <Typography fontWeight={700}>
-                {getChatName(data, user)}
-              </Typography>
+              <Box>
+                <Typography fontWeight={700}>
+                  {getChatName(data, user)}
+                </Typography>
+              </Box>
             </Box>
           )
         })}

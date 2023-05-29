@@ -24,7 +24,7 @@ const Login = () => {
   const handleFormSubmit = async (values, onSubmitProps) => {
     console.log("in handle submit")
     try {
-      const url = 'http://localhost:3001/user/auth/login';
+      const url = 'http://192.168.43.215:3001/user/auth/login';
       const response = await axios.post(url, values);
       // console.log(response.data);
       localStorage.setItem("userInfo", JSON.stringify(response.data));

@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { clearChat, selectChat } from "../redux/features/chatSlice";
 import { clearNotifications, removeNotification } from "../redux/features/notificationSlice";
+import NotificationsList from "./NotificationsList";
 
 const listButtonStyles = {
   margin: "0.5rem",
@@ -68,33 +69,7 @@ const Notifications = () => {
         PaperProps={{
           elevation: 3
         }}>
-        {messageNotifications.length === 0 &&
-          <MenuItem disabled>No messages....</MenuItem>}
-        {messageNotifications.map((message) => {
-          return (
-            <MenuItem key={message._id} sx={listButtonStyles} onClick={() => handleClick.goToChat(message)}>
-              <ListItemAvatar>
-                <Avatar alt="P" src={message.sender.pic} />
-              </ListItemAvatar>
-              <Box>
-                <Typography fontWeight={700}>{
-                  message.chat.isGroupChat ? message.chat.chatName : message.sender.name
-                }</Typography>
-                <Typography fontSize={12}>{message.content}</Typography>
-              </Box>
-            </MenuItem>
-          )
-        })}
-        <MenuItem disabled={messageNotifications.length === 0} sx={{
-          display: 'flex', justifyContent: 'center', '&:hover': {
-            backgroundColor: 'transparent'
-          }
-        }} disableRipple disableTouchRipple>
-          <Button disabled={messageNotifications.length === 0}
-            onClick={handleClick.clearAllNotifications}>
-            clear all
-          </Button>
-        </MenuItem>
+        <NotificationsList closeNotifications={handleClose.closeNotifications}/>
       </Menu>
     </>
   )
