@@ -1,25 +1,16 @@
 import {
   Avatar,
-  Badge,
   Box,
   Button,
-  IconButton,
-  ListItem,
   ListItemAvatar,
-  ListItemButton,
-  Menu,
   MenuItem,
-  Stack,
-  Tooltip,
   Typography
-} from "@mui/material";
-import MailIcon from '@mui/icons-material/Mail';
-import { useEffect, useState } from "react";
+} from "@mui/material"
 import { useDispatch, useSelector } from "react-redux"
-import { clearChat, selectChat } from "../redux/features/chatSlice";
+import { selectChat } from "../redux/features/chatSlice";
 import { clearNotifications, removeNotification } from "../redux/features/notificationSlice";
 
-const listButtonStyles = {
+const menuItemStyles = {
   margin: "0.5rem",
   borderRadius: "10px"
 }
@@ -27,13 +18,8 @@ const listButtonStyles = {
 const NotificationsList = ({ closeNotifications }) => {
   const dispatch = useDispatch();
   const messageNotifications = useSelector((store) => store.notifications.messageNotifications);
-  const [anchorElNotifications, setAnchorElNotifications] = useState(null);
-  const isNotificationsOpen = Boolean(anchorElNotifications);
 
   const handleClick = {
-    openNotifications: (event) => {
-      setAnchorElNotifications(event.currentTarget);
-    },
     goToChat: (message) => {
       closeNotifications();
       dispatch(selectChat(message.chat));
@@ -51,7 +37,7 @@ const NotificationsList = ({ closeNotifications }) => {
         <MenuItem disabled>No messages....</MenuItem>}
       {messageNotifications.map((message) => {
         return (
-          <MenuItem key={message._id} sx={listButtonStyles} onClick={() => handleClick.goToChat(message)}>
+          <MenuItem key={message._id} sx={menuItemStyles} onClick={() => handleClick.goToChat(message)}>
             <ListItemAvatar>
               <Avatar alt="P" src={message.sender.pic} />
             </ListItemAvatar>

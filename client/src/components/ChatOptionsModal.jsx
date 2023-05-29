@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react';
-import { Collapse, IconButton } from '@mui/material';
+import { Collapse, IconButton, useMediaQuery } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import ChatDetailsUi from './ChatDetailsUi';
@@ -11,21 +11,6 @@ import { useSelector } from 'react-redux';
 import AddUserToGroupOption from './AddUserToGroupOption';
 import AddUsersToGroupUi from './AddUsersToGroupUi';
 
-const containerStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 500,
-  bgcolor: 'background.paper',
-  borderRadius: '8px',
-  boxShadow: 24,
-  p: 1,
-  paddingBottom: '30px',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '0.5rem'
-};
 
 const ChatOptionsModal = ({ children }) => {
 
@@ -35,8 +20,23 @@ const ChatOptionsModal = ({ children }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openAddUsers, setOpenAddUsers] = useState(false);
+  const isNonMobile = useMediaQuery('(min-width: 700px)');
 
-
+  const containerStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isNonMobile ? 500 : '90%',
+    bgcolor: 'background.paper',
+    borderRadius: '8px',
+    boxShadow: 24,
+    p: 1,
+    paddingBottom: '30px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.5rem'
+  };
   const handleClose = (event, reason) => {
     if (reason === "backdropClick")
       return;

@@ -1,4 +1,4 @@
-import { Box, useMediaQuery } from "@mui/material";
+import { Box, Divider, useMediaQuery } from "@mui/material";
 import Chat from "../components/Chat";
 import MyChat from "../components/MyChat";
 import Navbar from "../components/Navbar";
@@ -28,18 +28,20 @@ const ChatPage = () => {
 
   const containerStyles = {
     display: "flex",
-    height: "90%",
-    padding: "10px",
-    gap: "10px",
+    height: isNonMobile ? "90%" : (showChat ? "100%" : "90%"),
+    padding: isNonMobile ? "10px" : "0px",
+    gap: isNonMobile ? "10px" : "0px",
   }
 
   return (
     isAuthorized &&
     <>
-      <Navbar />
+      {isNonMobile && <Navbar />}
+      {!isNonMobile && !showChat && <Navbar />}
+      {!isNonMobile && <Divider sx={{ width: '100%' }} />}
       <Box sx={containerStyles}>
         {!isNonMobile ? showChatList && <MyChat navigateToChat={() => { setShowChatList(false); setShowChat(true) }} /> : <MyChat />}
-        {!isNonMobile ? showChat && <Chat navigateToChatList={() => { setShowChatList(true); setShowChat(false) }}/> : <Chat />}
+        {!isNonMobile ? showChat && <Chat navigateToChatList={() => { setShowChatList(true); setShowChat(false) }} /> : <Chat />}
       </Box>
     </>
   );

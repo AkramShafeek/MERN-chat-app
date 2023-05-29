@@ -30,7 +30,7 @@ const MyChat = ({ navigateToChat }) => {
           "Authorization": `Bearer ${token}`,
         },
       };
-      const url = "http://localhost:3001/api/chat"
+      const url = "http://192.168.43.215:3001/api/chat"
       const response = await axios.get(url, config);
       dispatch(loadChat(response.data));
       setLoading(false);

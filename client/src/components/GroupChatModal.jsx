@@ -13,22 +13,8 @@ import { useTheme } from '@emotion/react';
 import { loadChat } from '../redux/features/chatSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { TransitionGroup } from 'react-transition-group';
-import { Button, Grow, IconButton, InputAdornment, Skeleton, TextField } from '@mui/material';
+import { Button, Grow, IconButton, InputAdornment, Skeleton, TextField, useMediaQuery } from '@mui/material';
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 500,
-  bgcolor: 'background.paper',
-  borderRadius: '8px',
-  boxShadow: 24,
-  p: 2,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '1rem'
-};
 
 const GroupChatModal = ({ children }) => {
   const token = useSelector((store) => store.user.token);
@@ -44,11 +30,28 @@ const GroupChatModal = ({ children }) => {
   const dispatch = useDispatch();
 
   const { palette } = useTheme();
+  
+  const isNonMobile = useMediaQuery('(min-width: 700px)');
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: isNonMobile ? 500 : '90%',
+    bgcolor: 'background.paper',
+    borderRadius: '8px',
+    boxShadow: 24,
+    p: 2,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem'
+  };
 
   const handleOpen = () => setOpen(true);
   const handleClose = (event, reason) => {
     if (reason === "backdropClick")
-      return;
+    return;
     setOpen(false)
     setSelectedUsers([]);
   };

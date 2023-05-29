@@ -20,7 +20,7 @@ var socket, selectedChatCompare;
 var chatMessagesSetter;
 var typingTimeout = null;
 
-const Chat = ({navigateToChatList}) => {
+const Chat = ({ navigateToChatList }) => {
 
   const { palette } = useTheme();
   const isNonMobile = useMediaQuery('(min-width:700px)');
@@ -97,7 +97,7 @@ const Chat = ({navigateToChatList}) => {
   const fetchChat = async () => {
     try {
       setLoading(true);
-      const url = `http://localhost:3001/api/message/${selectedChat._id}`;
+      const url = `http://192.168.43.215:3001/api/message/${selectedChat._id}`;
       const config = {
         headers: {
           Authorization: `Bearer ${token}`
@@ -121,8 +121,8 @@ const Chat = ({navigateToChatList}) => {
     justifyContent: "space-between",
     height: "100%",
     width: isNonMobile ? "68%" : "100%",
-    minWidth: isNonMobile ? "620px" : "400px",
-    borderRadius: "10px",
+    minWidth: isNonMobile ? "620px" : "200px",
+    borderRadius: isNonMobile ? "10px" : "0px",
   }
 
   const handleChange = (event) => {
@@ -200,17 +200,18 @@ const Chat = ({navigateToChatList}) => {
         justifyContent={"space-between"}
         alignItems={"center"}
         width={"100%"}
-        padding={"1.5rem 2rem"}
+        padding={isNonMobile ? "1.5rem 2rem" : "1.5rem 0.5rem"}
         sx={{
           borderBottom: '1px solid',
           borderColor: palette.neutral.light
         }}>
-        <Box display={"flex"} gap="1rem" alignItems="center">
-          <IconButton onClick={()=>navigateToChatList()}>
-            <ArrowBackIcon />
-          </IconButton>
+        <Box display={"flex"} gap={isNonMobile ? "1rem" : "0.5rem"} alignItems="center">
+          {!isNonMobile &&
+            <IconButton onClick={() => navigateToChatList()}>
+              <ArrowBackIcon />
+            </IconButton>}
           <Avatar src={getUserAvatar(selectedChat, user)}></Avatar>
-          <Typography variant="h3">{getChatName(selectedChat, user)}</Typography>
+          <Typography variant={isNonMobile ? "h3" : "h6"}>{getChatName(selectedChat, user)}</Typography>
         </Box>
         <ChatOptionsModal>
           <Button>options</Button>

@@ -1,75 +1,48 @@
 import {
-  Avatar,
   Badge,
-  Box,
-  Button,
   IconButton,
-  ListItem,
-  ListItemAvatar,
-  ListItemButton,
   Menu,
-  MenuItem,
-  Stack,
   Tooltip,
-  Typography
 } from "@mui/material";
-import MailIcon from '@mui/icons-material/Mail';
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux"
-import { clearChat, selectChat } from "../redux/features/chatSlice";
-import { clearNotifications, removeNotification } from "../redux/features/notificationSlice";
+import { useState } from "react";
+import { useSelector } from "react-redux"
 import NotificationsList from "./NotificationsList";
+import { Message } from "@mui/icons-material";
 
-const listButtonStyles = {
-  margin: "0.5rem",
-  borderRadius: "10px"
-}
 
 const Notifications = () => {
-  const dispatch = useDispatch();
-  const messageNotifications = useSelector((store) => store.notifications.messageNotifications);
+
+  const badgeNum = useSelector((store) => store.notifications.messageNotifications.length);
   const [anchorElNotifications, setAnchorElNotifications] = useState(null);
   const isNotificationsOpen = Boolean(anchorElNotifications);
 
-  const handleClick = {
-    openNotifications: (event) => {
-      setAnchorElNotifications(event.currentTarget);
-    },
-    goToChat: (message) => {
-      handleClose.closeNotifications();
-      dispatch(selectChat(message.chat));
-      dispatch(removeNotification(message.chat._id));
-    },
-    clearAllNotifications: () => {
-      dispatch(clearNotifications());
-      handleClose.closeNotifications();
-    }
+  const openNotifications = (event) => {
+    setAnchorElNotifications(event.currentTarget);
   }
 
-  const handleClose = {
-    closeNotifications: () => { setAnchorElNotifications(null); }
-  }
+  const closeNotifications = () => { setAnchorElNotifications(null); }
+
 
   return (
     <>
       <Tooltip title="Message notifications">
-        <IconButton onClick={handleClick.openNotifications}>
-          <Badge badgeContent={messageNotifications.length} color="primary">
-            <MailIcon color="action" />
+        <IconButton onClick={openNotifications}>
+          <Badge badgeContent={badgeNum} color="primary">
+            <Message color="action" />
           </Badge>
         </IconButton>
       </Tooltip>
       <Menu
         anchorEl={anchorElNotifications}
         open={isNotificationsOpen}
-        onClose={handleClose.closeNotifications}
+        onClose={closeNotifications}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
         PaperProps={{
           elevation: 3
         }}>
-        <NotificationsList closeNotifications={handleClose.closeNotifications}/>
+        <NotificationsList closeNotifications={closeNotifications} />
       </Menu>
     </>
   )

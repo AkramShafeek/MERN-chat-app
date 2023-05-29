@@ -1,5 +1,5 @@
 import { useTheme } from "@emotion/react"
-import { Avatar, Box, CircularProgress, Collapse, Fade, Grow, LinearProgress } from "@mui/material";
+import { Avatar, Box, CircularProgress, Collapse, Fade, Grow, LinearProgress, useMediaQuery } from "@mui/material";
 import { useSelector } from "react-redux";
 import { TransitionGroup } from 'react-transition-group';
 import { demoChats } from "./utils/util functions/demoChats";
@@ -12,6 +12,7 @@ const ChatMessages = ({ socket, chatMessages, isLoading }) => {
   const user = useSelector((store) => store.user.userInfo);
   const token = useSelector((store) => store.user.token);
   const selectedChat = useSelector((store) => store.chat.selectedChat);
+  const isNonMobile = useMediaQuery('(min-width:700px)');
   // const [chatMessages, setChatMessages] = useState([]);
 
   // useEffect(() => {
@@ -59,7 +60,7 @@ const ChatMessages = ({ socket, chatMessages, isLoading }) => {
                   alignItems={'flex-end'}
                   gap={"10px"}
                   width='fit-content'
-                  maxWidth={"45%"}>
+                  maxWidth={isNonMobile ? "45%" : "80%"}>
                   {isShowAvatar(message, index) && <Avatar src={message.sender.pic} />}
                   <Box sx={{
                     marginLeft: !isShowAvatar(message, index) && "51px",

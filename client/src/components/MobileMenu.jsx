@@ -1,16 +1,21 @@
-import { ArrowBack, ColorLens, DarkMode, LightMode, Logout, Message, MoreVert } from "@mui/icons-material";
+import { ArrowBack, ColorLens, DarkMode, LightMode, Logout, MenuRounded, Message, MoreVert } from "@mui/icons-material";
 import { Avatar, Box, Divider, IconButton, Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectTheme, toggleMode } from "../redux/features/uiModeSlice";
 import NotificationsList from "./NotificationsList";
 import ThemesList from "./ThemesList";
+import { clearUserInfo } from "../redux/features/userSlice";
+import { clearChat } from "../redux/features/chatSlice";
+import { clearNotifications } from "../redux/features/notificationSlice";
+import { useNavigate } from "react-router-dom";
 
 const MobileMenu = () => {
 
   const user = useSelector((store) => store.user.userInfo);
   const uiMode = useSelector((store) => store.ui.mode);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(null);
@@ -52,11 +57,18 @@ const MobileMenu = () => {
       lastOption(null);
     }
   }
+  
+  const logout = () => {
+    dispatch(clearUserInfo());
+    dispatch(clearChat());
+    dispatch(clearNotifications());
+    navigate('/');
+  }
 
   return (
     <Box>
       <IconButton onClick={handleOpen.openMobileMenu}>
-        <MoreVert />
+        <MenuRounded />
       </IconButton>
       <Menu
         anchorEl={anchorEl}
@@ -85,7 +97,7 @@ const MobileMenu = () => {
             <Message />
             Notifications
           </MenuItem>
-          <MenuItem sx={{ display: 'flex', gap: '0.8rem' }}>
+          <MenuItem sx={{ display: 'flex', gap: '0.8rem' }} onClick={logout}>
             <Logout />
             Logout
           </MenuItem>
