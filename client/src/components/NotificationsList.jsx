@@ -9,6 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux"
 import { selectChat } from "../redux/features/chatSlice";
 import { clearNotifications, removeNotification } from "../redux/features/notificationSlice";
+import { rootUrl } from "./utils/api callers/config";
 
 const menuItemStyles = {
   margin: "0.5rem",
@@ -39,7 +40,7 @@ const NotificationsList = ({ closeNotifications }) => {
         return (
           <MenuItem key={message._id} sx={menuItemStyles} onClick={() => handleClick.goToChat(message)}>
             <ListItemAvatar>
-              <Avatar alt="P" src={message.sender.pic} />
+              <Avatar alt="P" src={`${rootUrl}/assets/${message.sender.pic}`} />
             </ListItemAvatar>
             <Box>
               <Typography fontWeight={700}>{

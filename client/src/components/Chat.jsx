@@ -1,23 +1,19 @@
+import { rootUrl } from "./utils/api callers/config";
 import { useTheme } from "@emotion/react";
-import { BorderColor, CollectionsBookmarkTwoTone, SendRounded } from "@mui/icons-material";
-import { Avatar, Box, Button, CircularProgress, Collapse, Divider, IconButton, TextField, Typography, useMediaQuery } from "@mui/material";
-import DemoChats from "./DemoChats";
-import { selectChat } from "../redux/features/chatSlice";
-import { getChatName, getUserAvatar } from "./utils/util functions/getChatDetails";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import ChatOptionsModal from "./ChatOptionsModal";
-import ChatMessages from "./ChatMessages";
-import { sendMessageApi } from "./utils/api callers/messageApiCallers";
-import io from 'socket.io-client';
-import axios from "axios";
+import { SendRounded } from "@mui/icons-material";
 import { loadNotifications } from "../redux/features/notificationSlice";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getChatName, getUserAvatar } from "./utils/util functions/getChatDetails";
+import { fetchMessagesApi, sendMessageApi } from "./utils/api callers/messageApiCallers";
+import { Avatar, Box, Button, Collapse, IconButton, TextField, Typography, useMediaQuery } from "@mui/material";
+import io from 'socket.io-client';
 import mernLogo from "../images/mern.png";
+import ChatMessages from "./ChatMessages";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ChatOptionsModal from "./ChatOptionsModal";
 
-const ENDPOINT = "http://localhost:3001";
-var socket, selectedChatCompare;
-var chatMessagesSetter;
+var socket;
 var typingTimeout = null;
 
 const Chat = ({ navigateToChatList }) => {
@@ -39,29 +35,36 @@ const Chat = ({ navigateToChatList }) => {
   const [typingUser, setTypingUser] = useState(null);
 
   useEffect(() => {
-    socket = io(ENDPOINT);
+    socket = io(rootUrl);
     socket.emit('setup', user);
     socket.on('connected', () => setSocketConnected(true));
     socket.on('typing', (roomId, userPic) => {
-      console.log(roomId);
       setIsSomeoneTyping(true);
-      setTypingUser(userPic)
+      setTypingUser(`${rootUrl}/assets/${userPic}`)
     });
     socket.on('stop typing', () => { setIsSomeoneTyping(false); });
-
     return () => {
       socket.off('typing');
       socket.off('stop typing');
       socket.disconnect();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
 
     if (selectedChat) {
-      fetchChat()
-        .then(() => socket.emit('join chat', selectedChat._id))
-        .catch((error) => console.log(error));
+      setLoading(true);
+      fetchMessagesApi(selectedChat, token)
+        .then((data) => {
+          setChatMessages(data);
+          setLoading(false);
+          socket.emit('join chat', selectedChat._id)
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error)
+        });
     }
 
     // clean up logic
@@ -76,42 +79,22 @@ const Chat = ({ navigateToChatList }) => {
         socket.emit("leave chat", selectedChat._id);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat]);
 
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
-      if (!selectedChat || selectedChat._id != newMessageReceived.chat._id) {
-        // send notification here        
+      if (!selectedChat || selectedChat._id !== newMessageReceived.chat._id)
         dispatch(loadNotifications([newMessageReceived, ...messageNotifications]));
-      }
-      else {
+      else
         setChatMessages([...chatMessages, newMessageReceived]);
-      }
-
     })
+
+    // clean up code to stop listening to message events
     return () => {
       socket.off("message received");
     }
   });
-
-  const fetchChat = async () => {
-    try {
-      setLoading(true);
-      const url = `http://192.168.43.215:3001/api/message/${selectedChat._id}`;
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-      const response = await axios.get(url, config);
-      setChatMessages(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-      throw error;
-    }
-  }
 
   const containerStyles = {
     display: "flex",
@@ -152,7 +135,6 @@ const Chat = ({ navigateToChatList }) => {
 
       setIsUserTyping(false);
       setIsSomeoneTyping(false);
-      setTypingUser(null);
 
       socket.emit("stop typing", selectedChat._id);
       socket.emit('new message', data);
@@ -178,7 +160,7 @@ const Chat = ({ navigateToChatList }) => {
           alignItems: 'center'
         }}>
           <Box width="50%">
-            <img src={mernLogo} alt="" srcset="" width="100%" style={{ opacity: '50%' }} />
+            <img src={mernLogo} alt="" width="100%" style={{ opacity: '50%' }} />
           </Box>
           <Typography
             fontSize={25}
@@ -217,7 +199,6 @@ const Chat = ({ navigateToChatList }) => {
           <Button>options</Button>
         </ChatOptionsModal>
       </Box>
-      {/* <Divider sx={{width:'100%'}}/> */}
       <Box
         height={'100%'}
         width={"100%"}
@@ -227,8 +208,17 @@ const Chat = ({ navigateToChatList }) => {
         padding={"1rem"}
         sx={{ overflowY: "scroll" }}
       >
-        {<div><Collapse in={!isUserTyping && isSomeoneTyping} ><div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}><Avatar src={typingUser} />Typing....</div></Collapse></div>}
+        {<div>
+          <Collapse in={!isUserTyping && isSomeoneTyping} >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+              <Avatar src={typingUser} />Typing....
+            </div>
+          </Collapse>
+        </div>}
+
+        {/* CHAT MESSAGES COMPONENT WHICH RENDERS THE MESSAGES ON THE SCREEN */}
         <ChatMessages socket={socket} chatMessages={chatMessages} isLoading={loading} />
+
       </Box>
       <Box height={'15%'} width='100%'
         sx={{

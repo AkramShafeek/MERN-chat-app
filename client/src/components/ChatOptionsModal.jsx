@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import Modal from '@mui/material/Modal';
 import { useState } from 'react';
-import { Collapse, IconButton, useMediaQuery } from '@mui/material';
+import { IconButton, useMediaQuery } from '@mui/material';
 import LinearProgress from '@mui/material/LinearProgress';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import ChatDetailsUi from './ChatDetailsUi';
@@ -37,6 +37,7 @@ const ChatOptionsModal = ({ children }) => {
     flexDirection: 'column',
     gap: '0.5rem'
   };
+  
   const handleClose = (event, reason) => {
     if (reason === "backdropClick")
       return;

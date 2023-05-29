@@ -25,7 +25,7 @@ code {
 /* Track */
 ::-webkit-scrollbar-track {
   border-radius: 10px;
-  background: #f1f1f1;
+  background: #f1f1f148;
 }
 
 /* Handle */

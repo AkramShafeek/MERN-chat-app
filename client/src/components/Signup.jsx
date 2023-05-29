@@ -7,6 +7,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { useState } from "react";
 import axios from "axios";
+import { rootUrl } from "./utils/api callers/config";
 
 const initialValuesSignup = {
   name: "",
@@ -31,15 +32,15 @@ const Signup = () => {
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
   const handleFormSubmit = async (values, onSubmitProps) => {
-    if (values.confirmPassword != values.password) {
+    if (values.confirmPassword !== values.password) {
       setPasswordMismatched(true);
       setTimeout(()=>{setPasswordMismatched(false)},3000);
       return;
     }
     delete values.confirmPassword;
     try {
-      const url = 'http://localhost:3001/user/auth/register';
-      const response = await axios.post(url, values);
+      const url = `${rootUrl}/user/auth/register`;
+      await axios.post(url, values);
       setSuccess('Registered successfully, continue to login');
     } catch (error) {
       setError(error.response.data.msg);

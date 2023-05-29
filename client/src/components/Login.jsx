@@ -1,11 +1,13 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
-import { Formik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
+import { Formik } from "formik";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { userLogin } from "../redux/features/userSlice";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Box, Button, TextField, Typography } from "@mui/material";
+import { rootUrl } from "./utils/api callers/config";
+
 const initialValuesLogin = {
   email: "akramshafeek70@gmail.com",
   password: "123456789",
@@ -17,21 +19,19 @@ const loginSchema = yup.object().shape({
 });
 
 const Login = () => {
+
   const dispatch = useDispatch();
-  const userInfo = useSelector((state) => state.userInfo);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
   const handleFormSubmit = async (values, onSubmitProps) => {
     console.log("in handle submit")
     try {
-      const url = 'http://192.168.43.215:3001/user/auth/login';
+      const url = `${rootUrl}/user/auth/login`;
       const response = await axios.post(url, values);
-      // console.log(response.data);
-      localStorage.setItem("userInfo", JSON.stringify(response.data));
       dispatch(userLogin(response.data));
       navigate('/chat');
     } catch (error) {
-      // console.log(error.response.data);
       setError(error.response.data.msg);
     }
   }

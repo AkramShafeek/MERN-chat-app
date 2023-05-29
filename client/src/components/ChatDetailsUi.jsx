@@ -32,12 +32,14 @@ const ChatDetailsUi = ({ setLoading }) => {
 
   useEffect(() => {
     if (modifiedChat != null) {
+      // remove unmodified chat from the list
       const newChat = chat.filter((element) => element._id !== modifiedChat._id);
       // reload chat list with new group name
       dispatch(loadChat([modifiedChat, ...newChat]));
       // reselect chat with new group name
       dispatch(selectChat(modifiedChat));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modifiedChat]);
 
   const handleUserClick = (user, event) => {
@@ -118,41 +120,42 @@ const ChatDetailsUi = ({ setLoading }) => {
         }
       </div>
       {selectedChat.isGroupChat && <UsersList users={selectedChat.users} onUserClick={handleUserClick} limit={3} />}
-      {selectedChat.isGroupChat && <Menu
-        anchorEl={anchorEl}
-        open={showUserMenu}
-        onClose={handleMenuClose}
-        anchorOrigin={{
-          vertical: 'center',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'center',
-          horizontal: 'right',
-        }}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
-        PaperProps={{
-          elevation: 3
-        }}>
-        <MenuItem>
-          <IconButton
-            sx={{
-              width: "100%",
-              display: "flex",
-              justifyContent: "space-between",
-              gap: "10px",
-              padding: '0',
-              '&:hover': {
-                backgroundColor: 'transparent'
-              }
-            }} disableRipple onClick={removeUserFromGroup}>
-            <Typography fontSize="15px">Delete User</Typography>
-            <DeleteRounded color='error' />
-          </IconButton>
-        </MenuItem>
-      </Menu>}
+      {selectedChat.isGroupChat &&
+        <Menu
+          anchorEl={anchorEl}
+          open={showUserMenu}
+          onClose={handleMenuClose}
+          anchorOrigin={{
+            vertical: 'center',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'center',
+            horizontal: 'right',
+          }}
+          MenuListProps={{
+            'aria-labelledby': 'basic-button',
+          }}
+          PaperProps={{
+            elevation: 3
+          }}>
+          <MenuItem>
+            <IconButton
+              sx={{
+                width: "100%",
+                display: "flex",
+                justifyContent: "space-between",
+                gap: "10px",
+                padding: '0',
+                '&:hover': {
+                  backgroundColor: 'transparent'
+                }
+              }} disableRipple onClick={removeUserFromGroup}>
+              <Typography fontSize="15px">Delete User</Typography>
+              <DeleteRounded color='error' />
+            </IconButton>
+          </MenuItem>
+        </Menu>}
     </Box>
   );
 }

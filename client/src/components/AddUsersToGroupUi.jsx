@@ -39,16 +39,8 @@ const AddUsersToGroupUi = ({ getLoadingStatus, closeAddUsers }) => {
       setSelectedUsers([...selectedUsers, selectedUser]);
   }
   const removeUser = async (userId) => {
-    const filteredUsers = selectedUsers.filter((user) => user._id != userId);
+    const filteredUsers = selectedUsers.filter((user) => user._id !== userId);
     setSelectedUsers(filteredUsers);
-  }
-
-  const pause = () => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve();
-      }, 5000);
-    })
   }
 
   const addUsersToGroup = async () => {

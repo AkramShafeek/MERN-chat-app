@@ -1,14 +1,15 @@
-import { ArrowBack, ColorLens, DarkMode, LightMode, Logout, MenuRounded, Message, MoreVert } from "@mui/icons-material";
+import { ArrowBack, ColorLens, DarkMode, LightMode, Logout, MenuRounded, Message } from "@mui/icons-material";
 import { Avatar, Box, Divider, IconButton, Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { selectTheme, toggleMode } from "../redux/features/uiModeSlice";
+import { toggleMode } from "../redux/features/uiModeSlice";
 import NotificationsList from "./NotificationsList";
 import ThemesList from "./ThemesList";
 import { clearUserInfo } from "../redux/features/userSlice";
 import { clearChat } from "../redux/features/chatSlice";
 import { clearNotifications } from "../redux/features/notificationSlice";
 import { useNavigate } from "react-router-dom";
+import { rootUrl } from "./utils/api callers/config";
 
 const MobileMenu = () => {
 
@@ -52,12 +53,12 @@ const MobileMenu = () => {
     let newNavStack;
     if (navigationStack.length !== 0) {
       lastOption = navigationStack[navigationStack.length - 1];
-      newNavStack = navigationStack.filter((element, index) => index != navigationStack.length - 1);
+      newNavStack = navigationStack.filter((element, index) => index !== navigationStack.length - 1);
       setNavigationStack(newNavStack);
       lastOption(null);
     }
   }
-  
+
   const logout = () => {
     dispatch(clearUserInfo());
     dispatch(clearChat());
@@ -82,7 +83,7 @@ const MobileMenu = () => {
         <Divider sx={{ width: '100%' }} />
         {!isThemeOpen && !isNotificationsOpen && <Box>
           <MenuItem sx={{ display: 'flex', gap: '0.8rem' }}>
-            <Avatar src={user.pic} />
+            <Avatar src={`${rootUrl}/assets/${user.pic}`} />
             Change profile
           </MenuItem>
           <MenuItem sx={{ display: 'flex', gap: '0.8rem' }} onClick={handleOpen.openTheme}>
@@ -104,7 +105,7 @@ const MobileMenu = () => {
         </Box>}
         {isThemeOpen && <ThemesList />}
 
-        {isNotificationsOpen && <NotificationsList closeNotifications={handleClose}/>}
+        {isNotificationsOpen && <NotificationsList closeNotifications={handleClose} />}
       </Menu>
     </Box>
   );

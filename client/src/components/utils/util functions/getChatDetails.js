@@ -1,3 +1,5 @@
+import { rootUrl } from "../api callers/config";
+
 export const getChatName = (data, user) => {
   if (data.isGroupChat)
     return data.chatName;
@@ -12,6 +14,6 @@ export const getOppUserEmail = (data, user) => {
 
 export const getUserAvatar = (data, user) => {
   if (data.isGroupChat)
-    return 'http://localhost:3001/assets/group-avatar.jpeg';
-  return (data.users[0]._id === user._id ? data.users[1].pic : data.users[0].pic)
+    return `${rootUrl}/assets/group-avatar.jpeg`;  
+  return (data.users[0]._id === user._id ? `${rootUrl}/assets/${data.users[1].pic}` : `${rootUrl}/assets/${data.users[0].pic}`)
 }

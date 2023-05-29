@@ -1,4 +1,4 @@
-import { Box, Paper, Skeleton } from "@mui/material";
+import { Box, Paper } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import UsersSearchBar from "./utils/util components/UsersSearchBar";
 import UsersList from "./UsersList";
@@ -14,14 +14,13 @@ const NavbarSearchUser = () => {
   const dispatch = useDispatch();
 
   const [searchedUsers, setSearchedUsers] = useState([]);
-  const [openMenu, setOpenMenu] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [openSearchedList, setOpenSearchedList] = useState(false);
 
   useEffect(() => {
     if (searchedUsers.length)
-      setOpenMenu(true);
+      setOpenSearchedList(true);
     else
-      setOpenMenu(false);
+      setOpenSearchedList(false);
   }, [searchedUsers]);
 
 
@@ -35,7 +34,7 @@ const NavbarSearchUser = () => {
   const handleClickOutside = (event) => {
     if (refOne.current) {
       if (!refOne.current.contains(event.target)) {
-        setOpenMenu(false);
+        setOpenSearchedList(false);
       }
     }
   }
@@ -66,9 +65,8 @@ const NavbarSearchUser = () => {
     <Box position={"relative"} width={"100%"}>
       <UsersSearchBar
         getSearchedUsers={(data) => { setSearchedUsers(data) }}
-        getLoadingStatus={(status) => { setLoading(status) }}
         borderRadius={"30px"} />
-      {openMenu && <Paper sx={{
+      {openSearchedList && <Paper sx={{
         position: "absolute",
         zIndex: 2,
         width: "100%",

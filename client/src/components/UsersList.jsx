@@ -30,9 +30,10 @@ const UsersList = (props) => {
       setLoadingUser(user._id);
       // this function will give back the event of click
       // use it if needed
-      await await props.onUserClick(user, event);
-      setLoadingUser(null);
+      await props.onUserClick(user, event);
     } catch (error) {
+      console.log(error);
+    } finally {
       setLoadingUser(null);
     }
   }

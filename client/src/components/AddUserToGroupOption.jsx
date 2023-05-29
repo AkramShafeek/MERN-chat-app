@@ -1,7 +1,7 @@
 import { PersonAddAlt1Rounded } from "@mui/icons-material"
 import { Avatar, ListItem, ListItemAvatar, ListItemButton, ListItemText, Typography } from "@mui/material"
 
-const AddUserToGroupOption = (props) => {
+const AddUserToGroupOption = ({ openAddUsers }) => {
 
   const listButtonStyles = {
     marginTop: "0.5rem",
@@ -10,13 +10,12 @@ const AddUserToGroupOption = (props) => {
   }
 
   const handleClick = () => {
-    props.openAddUsers();
+    openAddUsers();
   }
 
   return (
-    // <div>add user</div>
 
-    <ListItemButton sx={listButtonStyles} onClick={(event) => handleClick()}>
+    <ListItemButton sx={listButtonStyles} onClick={handleClick}>
       <ListItem disablePadding sx={{ display: 'flex', alignItems: 'center' }}>
         <ListItemAvatar>
           <Avatar sx={{ backgroundColor: '#58bf71' }}>
@@ -33,7 +32,7 @@ const AddUserToGroupOption = (props) => {
 }
 
 AddUserToGroupOption.defaultProps = {
-  openAddUsers: () => {}
+  openAddUsers: () => { }
 }
 
 export default AddUserToGroupOption;

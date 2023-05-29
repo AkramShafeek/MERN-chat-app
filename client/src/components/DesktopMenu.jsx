@@ -1,18 +1,19 @@
-import { Avatar, Box, IconButton, Menu, MenuItem, Tooltip, useMediaQuery } from "@mui/material";
+import { rootUrl } from "./utils/api callers/config";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { clearChat } from "../redux/features/chatSlice";
 import { toggleMode } from "../redux/features/uiModeSlice";
+import { useNavigate } from "react-router-dom";
+import { clearUserInfo } from "../redux/features/userSlice";
+import { clearNotifications } from "../redux/features/notificationSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { Avatar, Box, IconButton, Menu, MenuItem, Tooltip } from "@mui/material";
+import Notifications from "./Notifications";
+import ThemesList from "./ThemesList";
+
+// icons
 import LightModeIcon from '@mui/icons-material/LightMode';
 import ColorLensIcon from '@mui/icons-material/ColorLens';
 import DarkModeIcon from '@mui/icons-material/DarkMode';
-import { useTheme } from "@emotion/react";
-import searchUsers from "./utils/util functions/searchUsers";
-import Notifications from "./Notifications";
-import { useNavigate } from "react-router-dom";
-import { clearUserInfo } from "../redux/features/userSlice";
-import { clearChat } from "../redux/features/chatSlice";
-import { clearNotifications } from "../redux/features/notificationSlice";
-import ThemesList from "./ThemesList";
 
 const DesktopMenu = () => {
   const pic = useSelector((store) => store.user.userInfo.pic);
@@ -26,7 +27,7 @@ const DesktopMenu = () => {
 
   const navigate = useNavigate();
 
-  const handleClick = {  
+  const handleClick = {
     profile: (event) => {
       setAnchorElProfile(event.currentTarget);
     },
@@ -37,7 +38,7 @@ const DesktopMenu = () => {
       setAnchorElTheme(event.currentTarget);
     }
   }
-  const handleClose = {  
+  const handleClose = {
     profile: () => {
       setAnchorElProfile(null);
     },
@@ -87,7 +88,7 @@ const DesktopMenu = () => {
       {/* PROFILE OPTIONS */}
       <Tooltip title="Profile Options">
         <IconButton onClick={handleClick.profile}>
-          <Avatar src={pic} />
+          <Avatar src={`${rootUrl}/assets/${pic}`} />
         </IconButton>
       </Tooltip>
       <Menu

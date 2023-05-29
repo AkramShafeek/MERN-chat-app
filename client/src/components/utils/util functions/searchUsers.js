@@ -1,4 +1,5 @@
 import axios from "axios";
+import { rootUrl } from "../api callers/config";
 
 const searchUsers = async (search, token) => {
 
@@ -6,7 +7,7 @@ const searchUsers = async (search, token) => {
     return;
 
   try {
-    const url = `http://localhost:3001/user/auth/allUsers?searchuser=${search}`;
+    const url = `${rootUrl}/user/auth/allUsers?searchuser=${search}`;
     const config = {
       headers: {
         Authorization: `Bearer ${token}`

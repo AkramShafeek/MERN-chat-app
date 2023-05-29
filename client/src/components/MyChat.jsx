@@ -1,17 +1,16 @@
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux"
 import { loadChat, selectChat } from "../redux/features/chatSlice";
 import { useEffect, useState } from "react";
-import { Avatar, Box, Button, Divider, Paper, Skeleton, Stack, Typography, useMediaQuery } from "@mui/material";
+import { Avatar, Box, Button, Paper, Skeleton, Stack, Typography, useMediaQuery } from "@mui/material";
 import { useTheme } from "@emotion/react";
 import GroupChatModal from "./GroupChatModal";
 import { getChatName, getUserAvatar } from "./utils/util functions/getChatDetails";
 import GroupsIcon from '@mui/icons-material/Groups';
+import { fetchChatsApi } from "./utils/api callers/chatApiCallers";
 
 
 const MyChat = ({ navigateToChat }) => {
   const token = useSelector((store) => store.user.token);
-  const mode = useSelector((store) => store.ui.theme);
   const user = useSelector((store) => store.user.userInfo);
   const chat = useSelector((store) => store.chat.data);
   const selectedChat = useSelector((store) => store.chat.selectedChat);
@@ -22,24 +21,6 @@ const MyChat = ({ navigateToChat }) => {
   const { palette } = useTheme();
   const isNonMobile = useMediaQuery('(min-width:700px)');
 
-  const fetchChats = async () => {
-    try {
-      setLoading(true);
-      const config = {
-        headers: {
-          "Authorization": `Bearer ${token}`,
-        },
-      };
-      const url = "http://192.168.43.215:3001/api/chat"
-      const response = await axios.get(url, config);
-      dispatch(loadChat(response.data));
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      setLoading(false);
-    }
-  }
-
   const handleClick = (chat) => {
     dispatch(selectChat(chat));
     if (!isNonMobile)
@@ -47,7 +28,17 @@ const MyChat = ({ navigateToChat }) => {
   }
 
   useEffect(() => {
-    fetchChats();
+    fetchChatsApi(token)
+      .then((data) => {
+        dispatch(loadChat(data))
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const welcomeStyle = {
@@ -70,7 +61,7 @@ const MyChat = ({ navigateToChat }) => {
     height: "100%",
     width: isNonMobile ? "31%" : "100%",
     minWidth: "280px",
-    borderRadius: "10px",
+    borderRadius: isNonMobile ? "10px" : "0px",
   }
 
   return (

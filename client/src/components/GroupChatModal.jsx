@@ -1,5 +1,4 @@
 import * as React from 'react';
-import axios from 'axios';
 import UsersList from './UsersList';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
@@ -14,6 +13,7 @@ import { loadChat } from '../redux/features/chatSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { TransitionGroup } from 'react-transition-group';
 import { Button, Grow, IconButton, InputAdornment, Skeleton, TextField, useMediaQuery } from '@mui/material';
+import { createGroupApi } from './utils/api callers/groupChatApiCallers';
 
 
 const GroupChatModal = ({ children }) => {
@@ -30,7 +30,7 @@ const GroupChatModal = ({ children }) => {
   const dispatch = useDispatch();
 
   const { palette } = useTheme();
-  
+
   const isNonMobile = useMediaQuery('(min-width: 700px)');
 
   const style = {
@@ -48,10 +48,13 @@ const GroupChatModal = ({ children }) => {
     gap: '1rem'
   };
 
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setOpen(true)
+  };
+
   const handleClose = (event, reason) => {
     if (reason === "backdropClick")
-    return;
+      return;
     setOpen(false)
     setSelectedUsers([]);
   };
@@ -65,15 +68,16 @@ const GroupChatModal = ({ children }) => {
     setSearchValue(event.target.value);
     var data;
     if (event.target.value) {
+      setLoading(true);
+      setClearSearchIcon(true);
       try {
-        setLoading(true);
-        setClearSearchIcon(true);
         data = await searchUsers(event.target.value, token);
         setSearchedUsers(data);
-        setLoading(false);
       } catch (error) {
-        console.log(error)
-        setLoading(false);
+        console.log(error);
+      }
+      finally {
+        setLoading(false);        
       }
     }
     else
@@ -91,28 +95,19 @@ const GroupChatModal = ({ children }) => {
   }
 
   const createGroup = async () => {
-    if (!groupChatName || !selectedUsers.length)
-      return
     try {
       setCreating(true);
-      const url = "http://localhost:3001/api/chat/group";
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-          "Authorization": `Bearer ${token}`
-        }
-      }
-      const response = await axios.post(url, { name: groupChatName, users: selectedUsers }, config);
-      // console.log(response.data);
+      const data = await createGroupApi(groupChatName, selectedUsers, token);
 
-      // append group chat to my chat display
-      dispatch(loadChat([...chat, response.data]));
-      setCreating(false);
+      // if data received append it to chat list
+      if (data)
+        dispatch(loadChat([...chat, data]));
+      
       handleClose(null, "group created");
-      return;
-    } catch (error) {
-      setCreating(false);
+    } catch (error) {      
       console.log("some error boss");
+    } finally {
+      setCreating(false);
     }
   }
 
@@ -133,19 +128,21 @@ const GroupChatModal = ({ children }) => {
             </Typography>
             <IconButton onClick={handleClose}><CloseRoundedIcon /></IconButton>
           </div>
-          <TextField value={groupChatName} fullWidth placeholder="Enter Group Name" onChange={(event) => setGroupChatName(event.target.value)} />
-          <TextField value={searchValue} fullWidth placeholder="search users eg: akram..."
+          <TextField
+            value={groupChatName}
+            fullWidth
+            placeholder="Enter Group Name"
+            onChange={(event) => setGroupChatName(event.target.value)} />
+          <TextField
+            value={searchValue}
+            fullWidth
+            placeholder="search users eg: akram..."
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   {clearSearchIcon ?
                     <IconButton onClick={clearSearch}
-                      sx={{
-                        padding: '0',
-                        '&:hover': {
-                          backgroundColor: 'transparent'
-                        }
-                      }}>
+                      sx={{ padding: '0' }} disableRipple>
                       <CloseRoundedIcon />
                     </IconButton> : <SearchRoundedIcon />}
                 </InputAdornment>
@@ -156,7 +153,13 @@ const GroupChatModal = ({ children }) => {
               {selectedUsers.map((user) => {
                 return (
                   <Grow key={user._id}>
-                    <Box display={"flex"} justifyContent={"space-between"} alignItems={"center"} gap={"10px"} borderRadius={"5px"} backgroundColor={palette.primary.light} padding={"10px 15px"}>
+                    <Box
+                      display={"flex"} j
+                      ustifyContent={"space-between"}
+                      alignItems={"center"}
+                      gap={"10px"}
+                      borderRadius={"5px"}
+                      backgroundColor={palette.primary.light} padding={"10px 15px"}>
                       {user.name}
                       <IconButton onClick={() => removeUser(user._id)}
                         sx={{
@@ -180,7 +183,14 @@ const GroupChatModal = ({ children }) => {
             </div>
           ) : <UsersList users={searchedUsers} onUserClick={addUserToGroup} limit={3} />}
           <Box display="flex" gap="1rem" justifyContent={"flex-end"}>
-            <Button variant="contained" sx={{ padding: "0.5rem 2rem" }} disableElevation onClick={createGroup} disabled={!(groupChatName && selectedUsers.length)}>Create Group</Button>
+            <Button
+              variant="contained"
+              sx={{ padding: "0.5rem 2rem" }}
+              disableElevation
+              onClick={createGroup}
+              disabled={!(groupChatName && selectedUsers.length)}>
+              Create Group
+            </Button>
           </Box>
         </Box>
       </Modal>
