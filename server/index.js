@@ -21,7 +21,7 @@ const messageRouter = require('./routes/messageRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 // middlewares
-app.use(cors({ origin: ['http://localhost:3000', 'http://192.168.43.215:3000'] }));
+app.use(cors({ origin: ['https://mern-chat-12tu.onrender.com'] }));
 app.use(express.json());
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 
@@ -49,10 +49,10 @@ const startServer = async () => {
             },
         });
         io.on("connection", (socket) => {
-            console.log("Connected to socket.io");
+            // console.log("Connected to socket.io");
             socket.on('setup', (userData) => {
                 socket.join(userData._id);
-                console.log(userData._id);
+                // console.log(userData._id);
                 socket.emit("connected");
             });
             socket.on("join chat", (roomId) => {

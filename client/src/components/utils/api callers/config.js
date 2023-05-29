@@ -1,1 +1,1 @@
-export const rootUrl = 'http://192.168.43.215:3001';
+export const rootUrl = 'https://mern-chat-api-gyfi.onrender.com';
