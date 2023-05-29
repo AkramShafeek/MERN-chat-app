@@ -49,10 +49,10 @@ const startServer = async () => {
             },
         });
         io.on("connection", (socket) => {
-            // console.log("Connected to socket.io");
+            console.log("Connected to socket.io");
             socket.on('setup', (userData) => {
                 socket.join(userData._id);
-                // console.log(userData._id);
+                console.log(userData._id);
                 socket.emit("connected");
             });
             socket.on("join chat", (roomId) => {
@@ -67,7 +67,7 @@ const startServer = async () => {
                 var chat = newMessageReceived.chat;
                 if (!chat.users) return console.log("Chat.users not defined");
 
-                console.log('message recieved')
+                // console.log('message recieved')
                 chat.users.forEach(user => {
                     if (user._id === newMessageReceived.sender._id)
                         return;
