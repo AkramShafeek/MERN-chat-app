@@ -5,12 +5,12 @@ import { useState } from "react";
 import { userLogin } from "../redux/features/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
 import { rootUrl } from "./utils/api callers/config";
 
 const initialValuesLogin = {
-  email: "akramshafeek70@gmail.com",
-  password: "123456789",
+  email: process.env.NODE_ENV === 'development' ? "akramshafeek70@gmail.com" : "",
+  password: process.env.NODE_ENV === 'development' ? "123456789" : "",
 };
 
 const loginSchema = yup.object().shape({
@@ -22,17 +22,21 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleFormSubmit = async (values, onSubmitProps) => {
     console.log("in handle submit")
     try {
+      setLoading(true);
       const url = `${rootUrl}/user/auth/login`;
       const response = await axios.post(url, values);
       dispatch(userLogin(response.data));
       navigate('/chat');
     } catch (error) {
       setError(error.response.data.msg);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -87,11 +91,11 @@ const Login = () => {
                 {error}
               </Typography>
             )}
-            <Button type="submit" sx={{ gridColumn: 'span 1' }} variant="contained">
+            <Button type="submit" sx={{ gridColumn: 'span 1' }} variant="contained" disabled={loading}>
               LOGIN
             </Button>
+            {loading && <CircularProgress color="primary" sx={{margin: 'auto'}}/>}
           </Box>
-
         </form >
       )}
     </Formik >

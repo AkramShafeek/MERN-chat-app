@@ -2,6 +2,7 @@ import { Avatar, Collapse, ListItem, ListItemAvatar, ListItemButton, ListItemTex
 import LinearProgress from '@mui/material/LinearProgress';
 import { useState } from "react";
 import { TransitionGroup } from 'react-transition-group';
+import { rootUrl } from "./utils/api callers/config";
 
 const userInfo = (user) => {
   return (
@@ -54,7 +55,7 @@ const UsersList = (props) => {
               <ListItemButton sx={listButtonStyles} onClick={(event) => handleClick(user, event)}>
                 <ListItem disablePadding>
                   <ListItemAvatar>
-                    <Avatar alt="P" src={user.pic} />
+                    <Avatar alt="P" src={`${rootUrl}/assets/${user.pic}`} />
                   </ListItemAvatar>
                   <ListItemText primary={userInfo(user)} />
                 </ListItem>

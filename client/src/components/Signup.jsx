@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import InputAdornment from '@mui/material/InputAdornment';
@@ -28,22 +28,26 @@ const Signup = () => {
   const [passwordMismatched, setPasswordMismatched] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [loading, setLoading] = useState(false);
   const handleClickShowPassword = () => setShowPassword(!showPassword);
   const handleMouseDownPassword = () => setShowPassword(!showPassword);
 
   const handleFormSubmit = async (values, onSubmitProps) => {
     if (values.confirmPassword !== values.password) {
       setPasswordMismatched(true);
-      setTimeout(()=>{setPasswordMismatched(false)},3000);
+      setTimeout(() => { setPasswordMismatched(false) }, 3000);
       return;
     }
     delete values.confirmPassword;
     try {
+      setLoading(true);
       const url = `${rootUrl}/user/auth/register`;
       await axios.post(url, values);
       setSuccess('Registered successfully, continue to login');
     } catch (error) {
       setError(error.response.data.msg);
+    } finally {
+      setLoading(false);
     }
 
   }
@@ -167,9 +171,10 @@ const Signup = () => {
                 cursor: 'pointer'
               }
             }} onChange={acceptImage}>Upload file</TextField>
-            <Button type="submit" sx={{ gridColumn: 'span 1' }} variant="contained">
-              REGISTER
+            <Button type="submit" sx={{ gridColumn: 'span 1' }} variant="contained" disabled={loading}>
+              Register
             </Button>
+            {loading && <CircularProgress color="primary" sx={{ margin: 'auto' }} />}
           </Box>
 
         </form >

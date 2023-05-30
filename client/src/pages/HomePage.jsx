@@ -8,40 +8,18 @@ import Signup from '../components/Signup';
 import { useMediaQuery } from '@mui/material';
 import bgImg from '../1185202.png';
 import { useTheme } from '@emotion/react';
-import Login2 from '../components/Login2';
-
-
-const initialValuesRegister = {
-  firstname: "",
-  lastname: "",
-  email: "",
-  password: "",
-  location: "",
-  occupation: "",
-  picture: "",
-};
-
-const initialValuesLogin = {
-  email: "",
-  password: "",
-};
+import Guest from '../components/Guest';
 
 
 const HomePage = () => {
   const isNonMobile = useMediaQuery("(min-width:700px)");
   const [value, setValue] = useState(1);
-  const isLogin = value == 1;
-  const isSignup = value == 2;
   const { palette } = useTheme();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   }
-  const handleFormSubmit = async (values, onSubmitProps) => {
-    console.log("in handle submit")
-    console.log(values);
-    // return;
-  };
+
   return (
     <div style={{
       display: "flex",
@@ -54,7 +32,7 @@ const HomePage = () => {
         width: '100%',
         height: '100vh',
         boxSizing: 'border-box',
-      }}><img src={bgImg} style={{
+      }}><img src={bgImg} alt="" style={{
         width: '100%',
         height: '100%',
         objectFit: 'cover',
@@ -92,9 +70,9 @@ const HomePage = () => {
               </Tabs>
             </Box>
             <Box padding={"2rem 0rem"}>
-              {value == 1 && <Login />}
+              {value === 1 && <Login />}
               {value === 2 && <Signup />}
-              {value === 3 && <Login2 />}
+              {value === 3 && <Guest />}
             </Box>
           </Box>
         </Box>
