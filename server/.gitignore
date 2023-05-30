@@ -3,3 +3,6 @@
 
 #environment variables
 .env
+
+#build folder
+/public/build

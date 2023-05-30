@@ -2,9 +2,9 @@ import { Box, Paper } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import UsersSearchBar from "./utils/util components/UsersSearchBar";
 import UsersList from "./UsersList";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { loadChat, selectChat } from "../redux/features/chatSlice";
+import { accessChatApi } from "./utils/api callers/chatApiCallers";
 
 const NavbarSearchUser = () => {
 
@@ -42,20 +42,12 @@ const NavbarSearchUser = () => {
 
   const accessChat = async (user, event) => {
     try {
-      const url = 'http://localhost:3001/api/chat/';
-      const config = {
-        headers: {
-          'Content-type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      }
-      const payload = { userId: user._id };
-      const response = await axios.post(url, payload, config);
+      const data = await accessChatApi(user, token);
 
       // if the selected user doesn't exist in the chat list, only then append it
-      if (!chat.find(element => element._id === response.data._id))
-        dispatch(loadChat([response.data, ...chat]));
-      dispatch(selectChat(response.data));
+      if (!chat.find(element => element._id === data._id))
+        dispatch(loadChat([data, ...chat]));
+      dispatch(selectChat(data));
     } catch (error) {
       console.log(error);
     }
