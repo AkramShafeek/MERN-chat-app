@@ -7,7 +7,10 @@ import GroupChatModal from "./GroupChatModal";
 import { getChatName, getUserAvatar } from "./utils/util functions/getChatDetails";
 import GroupsIcon from '@mui/icons-material/Groups';
 import { fetchChatsApi } from "./utils/api callers/chatApiCallers";
+import io from 'socket.io-client';
+import { rootUrl } from "./utils/api callers/config";
 
+var socket;
 
 const MyChat = ({ navigateToChat }) => {
   const token = useSelector((store) => store.user.token);
@@ -38,8 +41,10 @@ const MyChat = ({ navigateToChat }) => {
       .finally(() => {
         setLoading(false);
       })
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
 
   const welcomeStyle = {
     display: 'flex',

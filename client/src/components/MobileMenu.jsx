@@ -1,21 +1,26 @@
 import { ArrowBack, ColorLens, DarkMode, LightMode, Logout, MenuRounded, Message } from "@mui/icons-material";
 import { Avatar, Badge, Box, Divider, IconButton, Menu, MenuItem } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleMode } from "../redux/features/uiModeSlice";
 import NotificationsList from "./NotificationsList";
 import ThemesList from "./ThemesList";
 import { clearUserInfo } from "../redux/features/userSlice";
 import { clearChat } from "../redux/features/chatSlice";
-import { clearNotifications } from "../redux/features/notificationSlice";
+import { clearNotifications, loadNotifications } from "../redux/features/notificationSlice";
 import { useNavigate } from "react-router-dom";
 import { rootUrl } from "./utils/api callers/config";
+import io from 'socket.io-client';
+
+var socket;
 
 const MobileMenu = () => {
 
   const user = useSelector((store) => store.user.userInfo);
   const uiMode = useSelector((store) => store.ui.mode);
   const badgeNum = useSelector((store) => store.notifications.messageNotifications.length);
+  const messageNotifications = useSelector((store) => store.notifications.messageNotifications);
+  const selectedChat = useSelector((store) => store.chat.selectedChat);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -24,6 +29,30 @@ const MobileMenu = () => {
   const [isThemeOpen, setisThemeOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [navigationStack, setNavigationStack] = useState([]);
+
+
+  useEffect(() => {
+    socket = io(rootUrl);
+    socket.emit('setup', user);
+    return () => {
+      console.log("Disconnecting socket from mobile menu");
+      socket.disconnect();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    socket.on("message received", (newMessageReceived) => {
+      if (!selectedChat || selectedChat._id !== newMessageReceived.chat._id)
+        dispatch(loadNotifications([newMessageReceived, ...messageNotifications]));
+    })
+
+    // clean up code to stop listening to message events
+    return () => {
+      console.log("Removing socket event listener from mobile menu");
+      socket.off("message received");
+    }
+  }, [selectedChat, messageNotifications]);
 
 
   const handleOpen = {

@@ -74,7 +74,7 @@ const startServer = async () => {
             // console.log("Connected to socket.io");
             socket.on('setup', (userData) => {
                 socket.join(userData._id);
-                // console.log(userData._id);
+                console.log(userData._id);
                 socket.emit("connected");
             });
             socket.on("join chat", (roomId) => {
@@ -98,7 +98,6 @@ const startServer = async () => {
             });
             socket.on("typing", (roomId, userPic) => { socket.in(roomId).emit("typing", roomId, userPic) });
             socket.on("stop typing", (roomId) => { socket.in(roomId).emit("stop typing") });
-
             socket.off("setup", (userData) => {
                 // console.log("User disconnected");
                 socket.leave(userData._id);
