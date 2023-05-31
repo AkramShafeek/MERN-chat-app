@@ -1,5 +1,5 @@
 import { ArrowBack, ColorLens, DarkMode, LightMode, Logout, MenuRounded, Message } from "@mui/icons-material";
-import { Avatar, Box, Divider, IconButton, Menu, MenuItem } from "@mui/material";
+import { Avatar, Badge, Box, Divider, IconButton, Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleMode } from "../redux/features/uiModeSlice";
@@ -15,13 +15,14 @@ const MobileMenu = () => {
 
   const user = useSelector((store) => store.user.userInfo);
   const uiMode = useSelector((store) => store.ui.mode);
+  const badgeNum = useSelector((store) => store.notifications.messageNotifications.length);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(null);
-  const [isThemeOpen, setisThemeOpen] = useState(null);
-  const [isNotificationsOpen, setIsNotificationsOpen] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isThemeOpen, setisThemeOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [navigationStack, setNavigationStack] = useState([]);
 
 
@@ -42,10 +43,10 @@ const MobileMenu = () => {
   }
 
   const handleClose = () => {
-    setAnchorEl(null);
-    setIsMobileMenuOpen(null);
-    setisThemeOpen(null);
-    setIsNotificationsOpen(null);
+    setAnchorEl(false);
+    setIsMobileMenuOpen(false);
+    setisThemeOpen(false);
+    setIsNotificationsOpen(false);
   }
 
   const navigateBack = () => {
@@ -55,7 +56,7 @@ const MobileMenu = () => {
       lastOption = navigationStack[navigationStack.length - 1];
       newNavStack = navigationStack.filter((element, index) => index !== navigationStack.length - 1);
       setNavigationStack(newNavStack);
-      lastOption(null);
+      lastOption(false);
     }
   }
 
@@ -69,7 +70,9 @@ const MobileMenu = () => {
   return (
     <Box>
       <IconButton onClick={handleOpen.openMobileMenu}>
-        <MenuRounded />
+        <Badge badgeContent={badgeNum} color="primary" >
+          <MenuRounded />
+        </Badge>
       </IconButton>
       <Menu
         anchorEl={anchorEl}
@@ -95,7 +98,9 @@ const MobileMenu = () => {
             {uiMode === 'dark' ? "Light mode" : "Dark mode"}
           </MenuItem>
           <MenuItem sx={{ display: 'flex', gap: '0.8rem' }} onClick={handleOpen.openNotifications}>
-            <Message />
+            <Badge badgeContent={badgeNum} color="primary">
+              <Message />
+            </Badge>
             Notifications
           </MenuItem>
           <MenuItem sx={{ display: 'flex', gap: '0.8rem' }} onClick={logout}>

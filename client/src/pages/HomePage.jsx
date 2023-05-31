@@ -66,13 +66,13 @@ const HomePage = () => {
               <Tabs onChange={handleChange} value={value} centered variant="fullWidth">
                 <Tab label="Login" value={1} />
                 <Tab label="Sign Up" value={2} />
-                <Tab label="Guest" value={3} />
+                {process.env.NODE_ENV === 'development' && <Tab label="Guest" value={3} />}
               </Tabs>
             </Box>
             <Box padding={"2rem 0rem"}>
               {value === 1 && <Login />}
               {value === 2 && <Signup />}
-              {value === 3 && <Guest />}
+              {process.env.NODE_ENV === 'development' && value === 3 && <Guest />}
             </Box>
           </Box>
         </Box>

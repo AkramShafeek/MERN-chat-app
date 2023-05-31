@@ -37,6 +37,7 @@ const UsersSearchBar = ({ getSearchedUsers, getLoadingStatus, borderRadius }) =>
     // the parent component could be anything such as navbar,
     // group modal, add user modal, etc..
     getSearchedUsers(searchedUsers);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchedUsers]);
 
   const clearSearch = () => {

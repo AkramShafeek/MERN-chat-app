@@ -189,7 +189,7 @@ const Chat = ({ navigateToChatList }) => {
         }}>
         <Box display={"flex"} gap={isNonMobile ? "1rem" : "0.5rem"} alignItems="center">
           {!isNonMobile &&
-            <IconButton onClick={() => navigateToChatList()}>
+            <IconButton onClick={() => { console.log('navigating back to chat list'); navigateToChatList() }}>
               <ArrowBackIcon />
             </IconButton>}
           <Avatar src={getUserAvatar(selectedChat, user)}></Avatar>

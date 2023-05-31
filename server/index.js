@@ -21,14 +21,13 @@ const messageRouter = require('./routes/messageRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 // cors origin
-const corsOriginsDevelopment = ['http://localhost:3000','http://192.168.43.215:3000'];
+const corsOriginsDevelopment = ['http://localhost:3000', 'http://192.168.43.215:3000'];
 const corsOriginsProduction = ['https://mern-chat-12tu.onrender.com'];
 
 // middlewares
 app.use(cors({ origin: process.env.NODE_ENV === 'production' ? corsOriginsProduction : corsOriginsDevelopment }));
 app.use(express.json());
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
-app.use('/', express.static(path.join(__dirname, 'public/build')));
 
 // user router
 app.use('/user/auth/', userRouter);
@@ -37,6 +36,10 @@ app.use('/api/chat/', chatRouter);
 // message router
 app.use('/api/message/', messageRouter);
 
+app.use('/', express.static(path.join(__dirname, 'public/build')));
+app.get('/*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public/build','index.html'));
+})
 // error handler
 app.use(errorHandler);
 

@@ -30,6 +30,7 @@ const Guest = () => {
     try {
       setLoading(true);
       const url = `${rootUrl}/user/auth/login`;
+      console.log(url);
       const response = await axios.post(url, values);
       dispatch(userLogin(response.data));
       navigate('/chat');

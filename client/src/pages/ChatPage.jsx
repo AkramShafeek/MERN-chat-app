@@ -18,13 +18,36 @@ const ChatPage = () => {
   const user = useSelector((store) => store.user.userInfo);
   const token = useSelector((store) => store.user.token);
 
+
   useEffect(() => {
     console.log("checking authorization")
     if (!user || !token)
       navigate('/');
     else
       setIsAuthorized(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  /*
+   * This code is to listen to the back button event in the browser.
+   * This is meant for mobile devices where pressing the back button
+   * should lead to the chat list and not the login page.
+   */
+  useEffect(() => {
+    window.onpopstate = () => {
+      if (!isNonMobile) {
+        if (showChat) {
+          navigate('/chat')
+          console.log('navigating from chat');
+        }
+        else if (showChatList) {
+          navigate('/')
+          console.log('navigating from chat list')
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showChat, showChatList])
 
   const containerStyles = {
     display: "flex",

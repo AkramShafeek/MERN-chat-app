@@ -15,8 +15,8 @@ const ThemesList = () => {
 
   return (
     <Box>
-      {themes.map((theme) => {
-        return <MenuItem onClick={() => dispatch(selectTheme(theme[0]))}>{theme[1]}</MenuItem>
+      {themes.map((theme, index) => {
+        return <MenuItem key={index} onClick={() => dispatch(selectTheme(theme[0]))}>{theme[1]}</MenuItem>
       })}
     </Box>
   )

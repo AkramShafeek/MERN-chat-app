@@ -10,6 +10,7 @@ export const fetchChatsApi = async (token) => {
         };
         const url = `${rootUrl}/api/chat`
         const response = await axios.get(url, config);        
+
         return response.data;
     } catch (error) {
         console.log(error);        
