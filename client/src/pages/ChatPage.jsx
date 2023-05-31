@@ -20,7 +20,7 @@ const ChatPage = () => {
 
 
   useEffect(() => {
-    console.log("checking authorization")
+    // console.log("checking authorization")
     if (!user || !token)
       navigate('/');
     else
@@ -38,11 +38,11 @@ const ChatPage = () => {
       if (!isNonMobile) {
         if (showChat) {
           navigate('/chat')
-          console.log('navigating from chat');
+          // console.log('navigating from chat');
         }
         else if (showChatList) {
           navigate('/')
-          console.log('navigating from chat list')
+          // console.log('navigating from chat list')
         }
       }
     }

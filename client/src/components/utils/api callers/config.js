@@ -1,1 +1,1 @@
-export const rootUrl = process.env.NODE_ENV === 'prduction' ? 'https://mern-chat-api-gyfi.onrender.com' : 'http://192.168.43.215:3001';
+export const rootUrl = process.env.NODE_ENV === 'production' ? 'https://mern-chat-api-gyfi.onrender.com' : 'http://192.168.43.215:3001';

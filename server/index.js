@@ -36,10 +36,24 @@ app.use('/api/chat/', chatRouter);
 // message router
 app.use('/api/message/', messageRouter);
 
-app.use('/', express.static(path.join(__dirname, 'public/build')));
-app.get('/*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public/build','index.html'));
-})
+
+// below code is to serve static build files
+// as of now the server acts only as an api and does not serve any static files
+// in order to serve static files, place the static files inside a build folder
+// and place the build folder in the public folder.
+// -----------------------------------------------------------------------------
+// app.use('/', express.static(path.join(__dirname, 'public/build')));
+// -----------------------------------------------------------------------------
+
+// the below line is to rewrite all routes with index.html in case of single page applications
+// -----------------------------------------------------------------------------
+// app.get('/*', (req, res) => {
+//     res.sendFile(path.join(__dirname, 'public/build','index.html'));
+// })
+// -----------------------------------------------------------------------------
+
+
+
 // error handler
 app.use(errorHandler);
 
